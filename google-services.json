@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "534218395389",
+    "project_id": "greenapp-ff6c2",
+    "storage_bucket": "greenapp-ff6c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534218395389:android:68017f6d92766155533894",
+        "android_client_info": {
+          "package_name": "host.exp.exponent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534218395389-fvha5j2ki31dmk4bvoard09i09r0gdp0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "host.exp.exponent",
+            "certificate_hash": "86c84aa0f329364396cbc7b5b1706374924db2ee"
+          }
+        },
+        {
+          "client_id": "534218395389-tf4iumr5bljsf609vqgv3285fasct5iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-DUPpGHlsLUJQG6qRkrpfDdfZqDI1OgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534218395389-tf4iumr5bljsf609vqgv3285fasct5iq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534218395389-70iijoi5soin9g1u6i9c60u0g53bu7d9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

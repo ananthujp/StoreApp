@@ -1,13 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import {NavigationContainer} from "@react-navigation/native"
+import StackNavigator from './StackNavigator'
+import {AuthProvider} from './hooks/userAuth'
+import { AppLoading } from "expo";
+import * as Font from "expo-font";
+//import AsyncStorage from '@react-native-community/async-storage';
 
+// import useFonts hook  
+import { useFonts } from "@use-expo/font";
+const customFonts = {
+  GilroySm: require("./assets/fonts/Gilroy-Thin.ttf"),
+  GilroyR: require("./assets/fonts/Gilroy-Regular.ttf"),
+  GilroyMd: require("./assets/fonts/Gilroy-SemiBold.ttf"),
+  GilroyLg: require("./assets/fonts/Gilroy-Bold.ttf"),
+  GilroyXl: require("./assets/fonts/Gilroy-Black.ttf"),
+};
 export default function App() {
+  const [isLoaded] = useFonts(customFonts);
+  if (!isLoaded) {
+        return (<></>);
+    }
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <AuthProvider>
+      <StackNavigator/>
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
 
