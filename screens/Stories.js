@@ -46,9 +46,6 @@ const Stories = () => {
         renderItem={renderItem}
         keyExtractor={(item) => Images[item].id}
       />
-      {/* {Images.map((doc, index) =>{
-             return(<SharedElement id={`item.${doc.id}.photo`} style={tw('rounded-full w-10 h-10')}><TouchableOpacity onPress={()=> navigation.navigate("StoryScreen",{item:doc})} style={tw('flex flex-row w-full items-center justify-between')}><Image source={{uri : doc.img}} style={tw('h-10 w-10 rounded-full m-1')} /></TouchableOpacity></SharedElement>)
-            })} */}
     </Animated.View>
   );
 };
