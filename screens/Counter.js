@@ -11,14 +11,14 @@ const Counter = ({ icon, text, count }) => {
         //+(selection && " bg-white")
       )}
     >
-      <Icon name={icon} type="font-awesome-5" color={"#8D3AED"} size={28} />
+      <Icon name={icon} type="font-awesome-5" color={"#4338ca"} size={28} />
 
       <Text
-        style={[styles.fontStylelite, { color: "#8D3AED" }, tw("text-xs mx-2")]}
+        style={[styles.fontStylelite, { color: "#4338ca" }, tw("text-xs mx-2")]}
       >
         {text}
       </Text>
-      <Text style={[styles.fontStyle, { color: "#8D3AED" }, tw("text-sm")]}>
+      <Text style={[styles.fontStyle, { color: "#4338ca" }, tw("text-sm")]}>
         {count}
       </Text>
     </View>

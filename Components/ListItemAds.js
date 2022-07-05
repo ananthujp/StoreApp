@@ -9,9 +9,9 @@ import {
 } from "react-native";
 
 import { Icon } from "react-native-elements/dist/icons/Icon";
-import { styles } from "./Styles";
+import { styles } from "../screens/Styles";
 import { Image } from "react-native";
-const ListItem = ({ item, icon }) => {
+const ListItemAds = ({ item, moreInfo, logo, category }) => {
   const PAGE_DIM = Dimensions.get("window");
   const [exp, setExp] = React.useState(false);
 
@@ -30,7 +30,7 @@ const ListItem = ({ item, icon }) => {
     >
       <View style={tw("flex flex-row justify-between ")}>
         <View style={tw("flex flex-row items-start")}>
-          <Image style={tw("w-16 h-16 rounded-lg")} source={{ uri: icon }} />
+          <Image style={tw("w-24 h-24 rounded-lg")} source={{ uri: logo }} />
           <View style={tw("flex flex-col items-start ml-2")}>
             <Text
               style={[
@@ -40,11 +40,28 @@ const ListItem = ({ item, icon }) => {
             >
               {item}
             </Text>
+            {category.map((dc, i) => (
+              <Text
+                key={`category.${i}.${item}`}
+                style={[
+                  styles.fontStyleXlite,
+                  tw(
+                    " text-center text-xs text-purple-600 bg-purple-300 px-2 py-0.5 rounded-full"
+                  ),
+                ]}
+              >
+                {dc}
+              </Text>
+            ))}
           </View>
         </View>
         <View style={tw("flex flex-col items-center justify-around mx-2")}>
-          <TouchableOpacity style={tw("bg-white rounded-full opacity-75")}>
-            <Icon name={"plus"} type="antdesign" color={"gray"} size={32} />
+          <TouchableOpacity
+            style={tw(
+              "rounded-full w-8 h-8 opacity-75 flex items-center justify-center"
+            )}
+          >
+            <Icon name={"delete"} type="antdesign" color={"white"} size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -52,4 +69,4 @@ const ListItem = ({ item, icon }) => {
   );
 };
 
-export default ListItem;
+export default ListItemAds;

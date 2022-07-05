@@ -38,7 +38,7 @@ const StoryScreen = ({ navigation, route }) => {
           delay={600}
           style={[
             tw(
-              "absolute top-0 items-center w-full rounded-b-xl bg-purple-600 py-2"
+              "absolute top-0 items-center w-full rounded-b-xl bg-indigo-700 py-2"
             ),
             { zIndex: 4 },
           ]}

@@ -8,7 +8,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import { styles } from "./Styles";
@@ -16,10 +16,18 @@ import tw from "tailwind-rn";
 import Counter from "./Counter";
 import ListItem from "./ListItem";
 import { ProdData } from "./Data";
+import { useNavigation } from "@react-navigation/core";
+import ListItemOrder from "../Components/ListItemOrder";
+import ListItemAds from "../Components/ListItemAds";
+import ListItemWishlist from "../Components/ListItemWishlist";
+import Messages from "./Messages";
+import useAuth from "../hooks/userAuth";
 const ITEMS = ["Item 1", "Item 2", "Item 3", "Item 4"];
 const Profile = () => {
+  const { user } = useAuth();
   const PAGE_DIM = Dimensions.get("window");
   const [tab, setTab] = useState(0);
+  const navigation = useNavigation();
   const Tabs = [
     { name: "Messages", icon: "inbox", command: "message" },
     { name: "Orders", icon: "tag", command: "orders" },
@@ -145,18 +153,18 @@ const Profile = () => {
             rounded
             size={50}
             source={{
-              uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80",
+              uri: user ? user.dp : "",
             }}
           />
           <Text style={[styles.fontStyle, tw("ml-4 text-lg text-white")]}>
-            Hi Sierra!
+            Hi {user?.name}!
           </Text>
         </View>
         <Icon
           name="setting"
           type="antdesign"
           color="white"
-          onPress={() => console.log("hello")}
+          onPress={() => navigation.navigate("Login")}
         />
       </View>
       <View style={tw("flex w-full items-center")}>
@@ -178,25 +186,75 @@ const Profile = () => {
               { useNativeDriver: false }
             )}
             renderItem={({ item }) => {
-              return (
-                <View
-                  style={tw("flex flex-col px-2 mt-2 rounded-md")}
-                  height={PAGE_DIM.height - 350}
-                  width={PAGE_DIM.width}
-                >
-                  <ScrollView style={tw("flex w-full")}>
-                    {Orders.orders.map((doc, i) => (
-                      <ListItem
-                        key={`orders.list.${i}`}
-                        item={doc.title}
-                        logo={doc.logo}
-                        category={doc.category}
-                        moreInfo={Orders.moreInfoIcon}
-                      />
-                    ))}
-                  </ScrollView>
-                </View>
-              );
+              switch (item.command) {
+                case "message":
+                  return <Messages />;
+                  break;
+                case "orders":
+                  return (
+                    <View
+                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
+                      height={PAGE_DIM.height - 350}
+                      width={PAGE_DIM.width}
+                    >
+                      <ScrollView style={tw("flex w-full")}>
+                        {Orders.orders.map((doc, i) => (
+                          <ListItemOrder
+                            key={`orders.list.${i}`}
+                            item={doc.title}
+                            logo={doc.logo}
+                            category={doc.category}
+                            moreInfo={Orders.moreInfoIcon}
+                          />
+                        ))}
+                      </ScrollView>
+                    </View>
+                  );
+                  break;
+                case "ads":
+                  return (
+                    <View
+                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
+                      height={PAGE_DIM.height - 350}
+                      width={PAGE_DIM.width}
+                    >
+                      <ScrollView style={tw("flex w-full")}>
+                        {Orders.orders.map((doc, i) => (
+                          <ListItemAds
+                            key={`orders.list.${i}`}
+                            item={doc.title}
+                            logo={doc.logo}
+                            category={doc.category}
+                            moreInfo={Orders.moreInfoIcon}
+                          />
+                        ))}
+                      </ScrollView>
+                    </View>
+                  );
+                  break;
+                case "wishlist":
+                  return (
+                    <View
+                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
+                      height={PAGE_DIM.height - 350}
+                      width={PAGE_DIM.width}
+                    >
+                      <ScrollView style={tw("flex w-full")}>
+                        {Orders.orders.map((doc, i) => (
+                          <ListItemWishlist
+                            key={`orders.list.${i}`}
+                            item={doc.title}
+                            logo={doc.logo}
+                            category={doc.category}
+                            moreInfo={Orders.moreInfoIcon}
+                          />
+                        ))}
+                      </ScrollView>
+                    </View>
+                  );
+                  break;
+                default:
+              }
             }}
           />
         </View>

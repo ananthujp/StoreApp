@@ -15,6 +15,7 @@ const Stores = () => {
   const StoreCard = ({ data, i }) => {
     return (
       <TouchableOpacity
+        key={`stores.card${i}`}
         onPress={() =>
           navigation.navigate("StoreScreen", { data: data, index: i })
         }
@@ -53,7 +54,9 @@ const Stores = () => {
     );
   };
   const renderItem = useCallback(
-    ({ item, index }) => <StoreCard data={item} i={index} />,
+    ({ item, index }) => (
+      <StoreCard key={`store.card${index}.main`} data={item} i={index} />
+    ),
     []
   );
 

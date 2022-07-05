@@ -17,7 +17,7 @@ const StackNavigator = () => {
   return (
     //    <NavigationContainer independent={true}>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {user ? (
+      {!user ? (
         <>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Chat" component={ChatScreen} />
@@ -26,6 +26,7 @@ const StackNavigator = () => {
         //<Stack.Screen name="Login" component={Login} />}
         <>
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen
             name="ProductScreen"
             component={ProductScreen}

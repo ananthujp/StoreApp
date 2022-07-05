@@ -5,6 +5,7 @@ import {
   StatusBar,
   ImageBackground,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import React, { useLayoutEffect, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -23,6 +24,15 @@ import BottomSheet, {
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import Stores from "./Stores";
+
+const MyStatusBar = ({ backgroundColor, ...props }) => (
+  <View style={[styless.statusBar, { backgroundColor }]}>
+    <SafeAreaView>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </SafeAreaView>
+  </View>
+);
+
 const HomeScreen = () => {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -45,9 +55,9 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
-      <StatusBar barStyle="light-content" backgroundColor="#7C3AED" />
-
-      <View style={tw("flex flex-col h-full w-full bg-purple-600")}>
+      <StatusBar barStyle="light-content" backgroundColor="#4338ca" />
+      {/* <MyStatusBar backgroundColor="#7C3AED" barStyle="light-content" /> */}
+      <View style={tw("flex flex-col h-full w-full bg-indigo-700")}>
         <Profile />
 
         <BottomSheet
@@ -85,5 +95,23 @@ const HomeScreen = () => {
     </SafeAreaView>
   );
 };
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
+const styless = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  statusBar: {
+    height: STATUSBAR_HEIGHT,
+  },
+  appBar: {
+    backgroundColor: "#79B45D",
+    height: APPBAR_HEIGHT,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "#33373B",
+  },
+});
 export default HomeScreen;
