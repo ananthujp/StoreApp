@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import storage from "../storage";
 //import { View, Text } from 'react-native'
 import * as Google from "expo-google-app-auth";
 import { auth, db } from "../firebase";
@@ -33,9 +34,51 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const profID = "7BKEh2pdbk4GBfnE5hFx";
   useEffect(() => {
-    getDoc(doc(db, "Profiles", profID)).then((dc) =>
-      setUser({ name: dc.data().name, dp: dc.data().dp, id: dc.id })
-    );
+    // getDoc(doc(db, "Profiles", profID)).then((dc) =>
+    //   setUser({ name: dc.data().name, dp: dc.data().dp, id: dc.id })
+    // );
+    storage
+      .load({
+        key: "userState",
+
+        // autoSync (default: true) means if data is not found or has expired,
+        // then invoke the corresponding sync method
+        autoSync: true,
+
+        // syncInBackground (default: true) means if data expired,
+        // return the outdated data first while invoking the sync method.
+        // If syncInBackground is set to false, and there is expired data,
+        // it will wait for the new data and return only after the sync completed.
+        // (This, of course, is slower)
+        syncInBackground: true,
+
+        // you can pass extra params to the sync method
+        // see sync example below
+        syncParams: {
+          extraFetchOptions: {
+            // blahblah
+          },
+          someFlag: true,
+        },
+      })
+      .then((ret) => {
+        // found data go to then()
+        //setUser(ret);
+        setUser(ret);
+      })
+      .catch((err) => {
+        // any exception including data not found
+        // goes to catch()
+        console.warn(err.message);
+        switch (err.name) {
+          case "NotFoundError":
+            // TODO;
+            break;
+          case "ExpiredError":
+            // TODO
+            break;
+        }
+      });
   }, []);
   //   useEffect(
   //     () =>
@@ -76,9 +119,21 @@ export const AuthProvider = ({ children }) => {
   //       })
   //       .finally(() => setLoading(false));
   //   };
+  useEffect(() => {
+    user &&
+      storage.save({
+        key: "userState", // Note: Do not use underscore("_") in key!
+        data: user,
+
+        // if expires not specified, the defaultExpires will be applied instead.
+        // if set to null, then it will never expire.
+        expires: null,
+      });
+  }, [user]);
   const memoedValue = useMemo(
     () => ({
       user,
+      setUser,
     }),
     [user]
   );

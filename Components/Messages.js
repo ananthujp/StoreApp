@@ -1,11 +1,11 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import tw from "tailwind-rn";
 import { db } from "../firebase";
 import useAuth from "../hooks/userAuth";
-import ListItem from "./ListItem";
+import ListItem from "../screens/ListItem";
 const Orders = {
   orders: [
     {
@@ -68,7 +68,7 @@ function Messages() {
   const { user } = useAuth();
   useEffect(() => {
     user &&
-      getDocs(collection(db, "Profiles", user.id, "Messages")).then((dc) =>
+      onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) =>
         setThread(
           dc.docs.map((dic) => ({
             id: dic.id,
@@ -78,7 +78,8 @@ function Messages() {
           }))
         )
       );
-  }, []);
+  }, [user]);
+
   return (
     <View
       style={tw("flex flex-col px-2 mt-2 rounded-md")}
@@ -88,11 +89,7 @@ function Messages() {
       {threads && (
         <ScrollView style={tw("flex w-full")}>
           {threads.map((doc, i) => (
-            <ListItem
-              key={`thread.${doc.id}`}
-              item={doc.name}
-              icon={doc.icon}
-            />
+            <ListItem key={`thread.${doc.id}`} item={doc} index={i} />
           ))}
         </ScrollView>
       )}

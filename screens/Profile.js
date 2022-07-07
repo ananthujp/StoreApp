@@ -20,11 +20,12 @@ import { useNavigation } from "@react-navigation/core";
 import ListItemOrder from "../Components/ListItemOrder";
 import ListItemAds from "../Components/ListItemAds";
 import ListItemWishlist from "../Components/ListItemWishlist";
-import Messages from "./Messages";
+import Messages from "../Components/Messages";
 import useAuth from "../hooks/userAuth";
+import storage from "../storage";
 const ITEMS = ["Item 1", "Item 2", "Item 3", "Item 4"];
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const PAGE_DIM = Dimensions.get("window");
   const [tab, setTab] = useState(0);
   const navigation = useNavigation();
@@ -117,6 +118,7 @@ const Profile = () => {
           });
           return (
             <TouchableOpacity
+              key={`bde1.${i}.element`}
               onPress={() =>
                 flatListRef.current.scrollToIndex({
                   animated: true,
@@ -125,7 +127,7 @@ const Profile = () => {
               }
             >
               <Animated.View
-                key={`bd1.${i}.element`}
+                key={`bdc1.${i}.element`}
                 style={[
                   tw("flex mx-1 h-12  rounded-full"),
                   { width: scale },
@@ -153,18 +155,34 @@ const Profile = () => {
             rounded
             size={50}
             source={{
-              uri: user ? user.dp : "",
+              uri: user
+                ? user.dp
+                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
             }}
           />
-          <Text style={[styles.fontStyle, tw("ml-4 text-lg text-white")]}>
-            Hi {user?.name}!
-          </Text>
+
+          {user ? (
+            <Text style={[styles.fontStyle, tw("ml-4 text-lg text-white")]}>
+              Hi {user?.name}!
+            </Text>
+          ) : (
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={[styles.fontStyle, tw("ml-4 text-lg text-white")]}>
+                Login
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <Icon
           name="setting"
           type="antdesign"
           color="white"
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => {
+            setUser(null);
+            storage.remove({
+              key: "userState",
+            });
+          }}
         />
       </View>
       <View style={tw("flex w-full items-center")}>
