@@ -11,6 +11,7 @@ import useAuth from "./hooks/userAuth";
 import { NavigationContainer } from "@react-navigation/native";
 import StoreScreen from "./screens/StoreScreen";
 import MessageScreen from "./screens/MessageScreen";
+import NewProduct from "./screens/NewProduct";
 const Stack = createSharedElementStackNavigator();
 enableScreens();
 const StackNavigator = () => {
@@ -36,6 +37,7 @@ const StackNavigator = () => {
           // })}
         />
         <Stack.Screen name="StoreScreen" component={StoreScreen} />
+        <Stack.Screen name="NewProduct" component={NewProduct} />
         <Stack.Screen name="MessageScreen" component={MessageScreen} />
       </>
     </Stack.Navigator>

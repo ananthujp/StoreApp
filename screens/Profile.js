@@ -23,6 +23,7 @@ import ListItemWishlist from "../Components/ListItemWishlist";
 import Messages from "../Components/Messages";
 import useAuth from "../hooks/userAuth";
 import storage from "../storage";
+import AdsProfile from "../Components/AdsProfile";
 const ITEMS = ["Item 1", "Item 2", "Item 3", "Item 4"];
 const Profile = () => {
   const { user, setUser } = useAuth();
@@ -230,25 +231,7 @@ const Profile = () => {
                   );
                   break;
                 case "ads":
-                  return (
-                    <View
-                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
-                      height={PAGE_DIM.height - 350}
-                      width={PAGE_DIM.width}
-                    >
-                      <ScrollView style={tw("flex w-full")}>
-                        {Orders.orders.map((doc, i) => (
-                          <ListItemAds
-                            key={`orders.list.${i}`}
-                            item={doc.title}
-                            logo={doc.logo}
-                            category={doc.category}
-                            moreInfo={Orders.moreInfoIcon}
-                          />
-                        ))}
-                      </ScrollView>
-                    </View>
-                  );
+                  return <AdsProfile />;
                   break;
                 case "wishlist":
                   return (

@@ -83,7 +83,7 @@ function Messages() {
   const navigation = useNavigation();
   const PAGE_DIM = Dimensions.get("window");
   const [threads, setThread] = useState();
-  const [search, setSearch] = useState(true);
+  const [search, setSearch] = useState(false);
   const [profiles, setProfiles] = useState();
   const [results, setResults] = useState();
   const { user } = useAuth();
@@ -159,7 +159,7 @@ function Messages() {
     >
       <View
         style={tw(
-          " flex flex-col items-center z-50 w-full h-full rounded-lg" +
+          " flex flex-col items-center z-50  rounded-lg" +
             (search ? " absolute" : " hidden")
         )}
       >
@@ -171,7 +171,10 @@ function Messages() {
           <TextInput
             placeholder="Search for users..."
             onChangeText={(value) => setSearch(value)}
-            style={[tw("text-lg px-5 py-2 "), { width: 0.75 * PAGE_DIM.width }]}
+            style={[
+              tw("text-lg px-5 mx-4 py-2 "),
+              { width: 0.75 * PAGE_DIM.width },
+            ]}
           />
           <TouchableOpacity
             onPress={() => setSearch(false)}
@@ -196,9 +199,10 @@ function Messages() {
             (dc) =>
               dc.length > 0 &&
               dc?.map(
-                (dic) =>
+                (dic, i) =>
                   dic.id !== user.id && (
                     <TouchableOpacity
+                      key={`search.results.user${i}`}
                       onPress={() => {
                         newMessage(dic.id);
                       }}
