@@ -85,7 +85,7 @@ const MessageScreen = ({ route }) => {
     messageRef.current.scrollToEnd({ animated: true });
   }, [msgs]);
   return (
-    <View style={tw("flex flex-col h-full justify-between")}>
+    <View style={tw("flex flex-col h-full justify-between bg-gray-100")}>
       <View style={tw("flex flex-row items-center bg-indigo-700 p-4")}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Icon
@@ -113,7 +113,7 @@ const MessageScreen = ({ route }) => {
           item.from === "me" ? (
             <View
               style={{
-                backgroundColor: "#0078fe",
+                backgroundColor: "#6366f1",
                 padding: 10,
                 marginLeft: "45%",
                 borderRadius: 5,
@@ -162,7 +162,35 @@ const MessageScreen = ({ route }) => {
         )}
         <View style={tw("h-4")}></View>
       </ScrollView>
-      <View style={tw("flex flex-row items-center bg-indigo-400 w-full p-3")}>
+      <View style={tw("flex flex-row items-center p-3")}>
+        <TextInput
+          underlineColorAndroid="transparent"
+          onChangeText={(value) => setMsg(value)}
+          value={msg}
+          style={tw("bg-indigo-100 text-lg py-3 px-4 w-full rounded-xl")}
+        />
+        {load ? (
+          <Progress.CircleSnail
+            style={tw("h-8 w-8 -ml-11 rounded-lg items-center")}
+            size={30}
+            color={["#a5b4fc"]}
+          />
+        ) : (
+          <TouchableOpacity
+            onPress={sendMsg}
+            style={tw("bg-indigo-500 h-9 w-9 -ml-11 rounded-lg items-center")}
+          >
+            <Icon
+              name="paper-plane"
+              type="entypo"
+              color="white"
+              size={22}
+              style={tw("mt-1.5")}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+      {/* <View style={tw("flex flex-row items-center bg-indigo-400 w-full p-3")}>
         <TextInput
           onChangeText={(value) => setMsg(value)}
           value={msg}
@@ -191,14 +219,14 @@ const MessageScreen = ({ route }) => {
             />
           </TouchableOpacity>
         )}
-      </View>
+      </View> */}
     </View>
   );
 };
 const styles = StyleSheet.create({
   rightArrow: {
     position: "absolute",
-    backgroundColor: "#0078fe",
+    backgroundColor: "#6366f1",
     //backgroundColor:"red",
     width: 20,
     height: 25,

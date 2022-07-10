@@ -4,9 +4,10 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ScrollView,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
@@ -17,21 +18,29 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import * as Progress from "react-native-progress";
 import { manipulateAsync } from "expo-image-manipulator";
 const NewProduct = ({ route }) => {
   const userid = route.params.userid;
   const [image, setImage] = useState([]);
+  const [load, setLoad] = useState(false);
+  const [prod_name, setProdName] = useState();
+  const [prod_desc, setProdDesc] = useState();
+  const [prod_loc, setProdLoc] = useState();
+  const createProduct = () => {
+    prod_name && prod_desc && prod_loc && image.length > 0
+      ? console.log("Set")
+      : console.log("Nops");
+  };
   const uploadFile = async () => {
     const response = await fetch(image[0].uri);
     const blob = await response.blob();
     const metadata = {
       contentType: "image/jpeg",
     };
-
     // Upload file and metadata to the object 'images/mountains.jpg'
     const storageRef = ref(storage, "images/images1.jpg");
     const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
-
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on(
       "state_changed",
@@ -59,9 +68,7 @@ const NewProduct = ({ route }) => {
           case "storage/canceled":
             // User canceled the upload
             break;
-
           // ...
-
           case "storage/unknown":
             // Unknown error occurred, inspect error.serverResponse
             break;
@@ -92,59 +99,113 @@ const NewProduct = ({ route }) => {
           compress: 1,
         }
       );
-      setImage([...image, { uri: manipResult.uri }]);
+      setImage([...image, { id: image.length, uri: manipResult.uri }]);
     }
   };
   return (
     <View style={tw("flex flex-col h-full")}>
       <View style={tw("flex flex-col h-1/3 bg-indigo-700")}></View>
-      <View style={tw("flex flex-col ")}>
+
+      <View style={tw("flex flex-col")}>
         <TextInput
+          value={prod_name}
+          onChangeText={(value) => setProdName(value)}
+          underlineColorAndroid="transparent"
           placeholder="Product Name"
           style={tw(
-            "text-lg py-2 px-4 mx-2 my-4 border rounded-full border-gray-300 bg-gray-200 "
+            " font-bold py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
           )}
         />
-
-        <View style={tw("flex flex-row")}>
+        <TextInput
+          value={prod_desc}
+          onChangeText={(value) => setProdDesc(value)}
+          underlineColorAndroid="transparent"
+          multiline={true}
+          placeholder="Product Description"
+          style={[
+            tw(
+              " py-2 px-4 mx-2 my-1 border rounded-md border-gray-300 bg-gray-200 "
+            ),
+            { minHeight: "10%" },
+          ]}
+        />
+        <Text style={tw("mx-4 text-gray-500 mt-2")}>Product Images</Text>
+        <View style={tw("flex mx-2  flex-row mt-1")}>
           {image?.map((dc, i) => (
-            <Image
+            <View
               key={`picked.images.${i}`}
-              source={{ uri: dc.uri }}
-              style={tw("w-24 h-24 mx-2 border border-indigo-100")}
-            />
+              style={tw("flex relative border-2 border-indigo-100 mx-2 ")}
+            >
+              <Image source={{ uri: dc.uri }} style={tw("w-20 h-20")} />
+              <TouchableOpacity
+                onPress={() =>
+                  setImage(image.filter((item) => item.id !== dc.id))
+                }
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name="close" type="antdesign" color={"white"} size={20} />
+              </TouchableOpacity>
+            </View>
           ))}
-          <TouchableOpacity
-            style={tw(
-              "w-24 h-24 mx-2 border border-indigo-100 flex items-center justify-center"
-            )}
-            onPress={pickImage}
-          >
+          {image?.length < 4 && (
+            <TouchableOpacity
+              style={tw(
+                "w-20 h-20 mx-2 border border-indigo-100 flex items-center justify-center"
+              )}
+              onPress={pickImage}
+            >
+              <Icon
+                name="plus"
+                type="antdesign"
+                color={"gray"}
+                style={tw(" text-gray-400 mr-2")}
+                size={50}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        <TextInput
+          value={prod_loc}
+          onChangeText={(value) => setProdLoc(value)}
+          underlineColorAndroid="transparent"
+          placeholder="Location {example : Hiqom Hostel}"
+          style={tw(
+            " py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
+          )}
+        />
+        <TouchableOpacity
+          onPress={createProduct}
+          style={[
+            tw(
+              "flex flex-row items-center my-3 bg-indigo-500 flex items-center px-6 h-12 rounded-md "
+            ),
+            { marginLeft: "auto", marginRight: "auto" },
+          ]}
+        >
+          {load ? (
+            <Progress.CircleSnail
+              style={tw(" mr-2 rounded-lg items-center")}
+              size={25}
+              color={["red"]}
+            />
+          ) : (
             <Icon
               name="plus"
               type="antdesign"
-              color={"gray"}
+              color={"white"}
               style={tw(" text-gray-400 mr-2")}
-              size={50}
+              size={20}
             />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          onPress={uploadFile}
-          style={tw(
-            "flex flex-row items-center my-3 bg-indigo-500 flex items-center px-4 py-2 mx-8 rounded-md "
           )}
-        >
-          <Icon
-            name="plus"
-            type="antdesign"
-            color={"white"}
-            style={tw(" text-gray-400 mr-2")}
-            size={20}
-          />
-          <Text style={tw("ml-2 mr-2 text-white text-center")}>
-            New Message
-          </Text>
+          <Text style={tw("text-white text-center")}>Create</Text>
         </TouchableOpacity>
       </View>
     </View>
