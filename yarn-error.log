@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarnpkg add expo-permissions@~13.0.3
+  /usr/local/bin/node /usr/local/bin/yarn add @react-native-firebase/app
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/ananthujp/opt/anaconda3/bin:/Users/ananthujp/opt/anaconda3/condabin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/ananthujp/Documents/React/Store/node_modules/@firebase/polyfill/node_modules/core-js/LICENSE'
+  Error: EACCES: permission denied, unlink '/Users/ananthujp/Documents/React/Store/node_modules/@firebase/polyfill/node_modules/core-js/README.md'
 
 npm manifest: 
   {
@@ -40,13 +40,16 @@ npm manifest:
       "expo": "~43.0.2",
       "expo-font": "~10.0.3",
       "expo-google-app-auth": "~9.0.0",
+      "expo-image-manipulator": "~10.1.2",
       "expo-image-picker": "~11.0.3",
+      "expo-permissions": "~13.0.3",
       "expo-status-bar": "~1.1.0",
       "firebase": "^9.5.0",
       "react": "17.0.1",
       "react-dom": "17.0.1",
       "react-native": "0.64.3",
       "react-native-animatable": "^1.3.3",
+      "react-native-circular-progress-indicator": "^4.3.0",
       "react-native-elements": "^3.4.2",
       "react-native-gesture-handler": "~1.10.2",
       "react-native-progress": "^5.0.0",
@@ -3330,6 +3333,19 @@ Lockfile:
     dependencies:
       expo-app-auth "~11.0.3"
   
+  expo-image-loader@~3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-3.0.0.tgz#5ada47a0f90f8dec1777520d36e35c65155d9ea9"
+    integrity sha512-r4D+uLCf5vm5A2JIbF1Bc9FjYKrYGSLShbFB1MUvZ4BpSXJPRsprYZ9veUBVzzhh8hr23ahTFjMzp3nC57iREw==
+  
+  expo-image-manipulator@~10.1.2:
+    version "10.1.2"
+    resolved "https://registry.yarnpkg.com/expo-image-manipulator/-/expo-image-manipulator-10.1.2.tgz#1053d26f30d5c690ebe2d012b98ac3f0ae57b51a"
+    integrity sha512-biMGVL7kzCVFIUpNVVf8FHcPzKPHK8RPooe8R9mjBIPV+FimVF6mIBdtTGe9Fw7iFm+jyRJONG2lZOrdBEUk+A==
+    dependencies:
+      expo-image-loader "~3.0.0"
+      expo-modules-core "~0.4.4"
+  
   expo-image-picker@~11.0.3:
     version "11.0.3"
     resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-11.0.3.tgz#c0b6cb9b5fa027f1bd1879a879fe13157f31ac94"
@@ -3362,6 +3378,13 @@ Lockfile:
     dependencies:
       compare-versions "^3.4.0"
       invariant "^2.2.4"
+  
+  expo-permissions@~13.0.3:
+    version "13.0.3"
+    resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-13.0.3.tgz#93d4395658d9967d257faa31bbec096551654aaf"
+    integrity sha512-bVjdnhYDZy06jX0J+0fGuXzEJ7r+ibl9yCAsumd3S/ELrs1wbR8/zOkQBaSyoYk0z9MiGCC4ul6UB10wEiMPmw==
+    dependencies:
+      expo-modules-core "~0.4.4"
   
   expo-status-bar@~1.1.0:
     version "1.1.0"
@@ -5762,6 +5785,11 @@ Lockfile:
     integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
     dependencies:
       prop-types "^15.7.2"
+  
+  react-native-circular-progress-indicator@^4.3.0:
+    version "4.3.0"
+    resolved "https://registry.yarnpkg.com/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.3.0.tgz#87c7f75c08ae3b84b65d5c4a52c8b9c4051895ae"
+    integrity sha512-HrNmjBu5aiBvBRaUCU/VexMPAeSrPk9/EsO/vtMilwkJXfJ7iSK3TvHJKQzIQRHS8PJgItsU6szV9BXMenvARw==
   
   react-native-codegen@^0.0.6:
     version "0.0.6"

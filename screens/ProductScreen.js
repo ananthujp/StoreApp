@@ -7,7 +7,7 @@ import {
   StatusBar,
   Animated,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,15 +17,50 @@ import { Image } from "react-native";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Comments from "./Comments";
 import { SharedElement } from "react-navigation-shared-element";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import useAuth from "../hooks/userAuth";
+import { useNavigation } from "@react-navigation/core";
 
-const ProductScreen = ({ route, navigation }) => {
+const ProductScreen = ({ route }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const PAGE_DIM = Dimensions.get("window");
-  const ProdImages = route.params.images;
+  const [prodData, setProdData] = useState();
+  const [threads, setThread] = useState();
+  //const ProdImages = route.params.images;
+  const navigation = useNavigation();
+  const ProdID = route.params.data;
+  const { user } = useAuth();
+  useEffect(() => {
+    user &&
+      onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) =>
+        setThread(
+          dc.docs.map((dic) => ({
+            id: dic.id,
+            name: dic.data().name,
+            icon: dic.data().icon,
+            //messages: dic.data().messages,
+          }))
+        )
+      );
+  }, [user]);
+  useEffect(() => {
+    getDoc(doc(db, "Products", ProdID)).then((dc) =>
+      setProdData({ id: dc.id, data: dc.data() })
+    );
+  }, []);
   const Backdrop = ({ scrollX }) => {
     return (
       <View style={tw("flex flex-row items-center")}>
-        {ProdImages.map((_, i) => {
+        {prodData?.data.images.map((_, i) => {
           const inputRange = [
             (i - 1) * PAGE_DIM.width,
             i * PAGE_DIM.width,
@@ -49,6 +84,38 @@ const ProductScreen = ({ route, navigation }) => {
       </View>
     );
   };
+  const newMessage = (tid) => {
+    const matches = threads?.filter((element) => {
+      if (element.id.indexOf(tid) !== -1) {
+        return true;
+      }
+    });
+    matches.length
+      ? navigation.navigate("MessageScreen", {
+          userid: user.id,
+          thread: tid,
+          prodID: ProdID,
+        })
+      : setDoc(doc(db, "Profiles", user.id, "Messages", tid), {
+          name: "Test",
+        }).then(() =>
+          addDoc(
+            collection(db, "Profiles", user.id, "Messages", tid, "messages"),
+            {
+              data: "Chat created",
+              read: false,
+              time: serverTimestamp(),
+              from: "me",
+            }
+          ).then(() => {
+            navigation.navigate("MessageScreen", {
+              userid: user.id,
+              thread: tid,
+              prodID: ProdID,
+            });
+          })
+        );
+  };
   return (
     <SafeAreaView>
       <StatusBar animated barStyle="dark-content" backgroundColor="white" />
@@ -57,7 +124,7 @@ const ProductScreen = ({ route, navigation }) => {
           <View style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}>
             <Animated.FlatList
               horizontal
-              data={ProdImages}
+              data={prodData?.data.images}
               keyExtractor={(_, index) => index.toString()}
               snapToInterval={PAGE_DIM.width}
               decelerationRate="fast"
@@ -86,22 +153,27 @@ const ProductScreen = ({ route, navigation }) => {
         </View>
         <View
           style={[
-            tw("flex flex-row justify-between mx-4 items-center h-8"),
-            { marginTop: -32 - 96 },
+            tw(
+              "flex flex-row justify-between mt-4 mx-4 items-center h-8 absolute top-0 "
+            ),
+            { width: 0.95 * PAGE_DIM.width },
           ]}
         >
           <View
             style={tw(
-              "flex flex-col bg-blue-300 px-2 justify-center h-7 w-16 rounded-2xl"
+              "flex flex-row bg-blue-500 px-2 items-center justify-center h-7  rounded-2xl"
             )}
           >
+            <Icon name="place" type="material" color="red" size={20} />
             <Text
               style={[
                 styles.fontStyle,
-                tw("text-blue-800 text-center text-lg"),
+                tw("text-white text-center text-xs mr-1"),
               ]}
             >
-              30%
+              {prodData?.data.loc.length > 7
+                ? prodData?.data.loc.slice(0, 8) + ".."
+                : prodData?.data.loc}
             </Text>
           </View>
           <Backdrop scrollX={scrollX} />
@@ -120,7 +192,7 @@ const ProductScreen = ({ route, navigation }) => {
           <BottomSheetScrollView style={tw("flex flex-col mx-8 mt-3")}>
             <View style={tw("flex flex-row items-center justify-between")}>
               <Text style={[tw("text-3xl text-indigo-900"), styles.fontStyle]}>
-                Cloth Mask 11''
+                {prodData?.data.name}
               </Text>
               <View style={tw("flex flex-row")}>
                 <Icon name="star" type="antdesign" color="#F4E185" size={21} />
@@ -149,15 +221,10 @@ const ProductScreen = ({ route, navigation }) => {
                   { textAlign: "justify" },
                 ]}
               >
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged.
+                {prodData?.data.desc}
               </Text>
             </View>
-            <Comments />
+            <Comments ProdID={ProdID} />
           </BottomSheetScrollView>
         </BottomSheet>
         <View
@@ -176,13 +243,16 @@ const ProductScreen = ({ route, navigation }) => {
                 ₹
               </Text>
               <Text style={[tw("text-3xl text-indigo-900"), styles.fontStyle]}>
-                150.00
+                {prodData?.data.price}
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={tw("bg-gray-100 p-3 rounded-2xl")}>
+          <TouchableOpacity
+            onPress={() => newMessage(prodData?.data.user)}
+            style={tw("bg-yellow-400 p-3 rounded-2xl")}
+          >
             <Text style={[tw("text-base text-indigo-900"), styles.fontStyle]}>
-              Add to Cart
+              Contact Seller
             </Text>
           </TouchableOpacity>
         </View>
@@ -190,14 +260,14 @@ const ProductScreen = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
-ProductScreen.sharedElements = (route, otherNavigation, showing) => {
-  const items = route.params.images;
-  return [
-    {
-      id: `item.${items[0]}.img`,
-      animation: "fade",
-      //resize: 'clip',
-    },
-  ];
-};
+// ProductScreen.sharedElements = (route, otherNavigation, showing) => {
+//   const items = route.params.images;
+//   return [
+//     {
+//       id: `item.${items[0]}.img`,
+//       animation: "fade",
+//       //resize: 'clip',
+//     },
+//   ];
+// };
 export default ProductScreen;

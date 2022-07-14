@@ -11,15 +11,25 @@ import React, { useEffect, useState } from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../firebase";
+import { db, storage } from "../firebase";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  uploadBytes,
 } from "firebase/storage";
 import * as Progress from "react-native-progress";
+import CircularProgress from "react-native-circular-progress-indicator";
 import { manipulateAsync } from "expo-image-manipulator";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { useNavigation } from "@react-navigation/core";
 const NewProduct = ({ route }) => {
   const userid = route.params.userid;
   const [image, setImage] = useState([]);
@@ -27,84 +37,153 @@ const NewProduct = ({ route }) => {
   const [prod_name, setProdName] = useState();
   const [prod_desc, setProdDesc] = useState();
   const [prod_loc, setProdLoc] = useState();
+  const [comp, setComp] = useState(false);
+  const [value, setValue] = useState(0);
+  const [prodID, setProdId] = useState(0);
+  const [value2, setValue2] = useState();
+  const [title, setTitle] = useState("");
+  const navigation = useNavigation();
+  useEffect(() => {
+    value === 100 && setComp(true);
+  }, [value]);
+  useEffect(() => {
+    switch (value2) {
+      case 0:
+        setValue(value + 75 / image.length);
+        break;
+      case 1:
+        setValue(value + 75 / image.length);
+        break;
+      case 2:
+        setValue(value + 75 / image.length);
+        break;
+      case 3:
+        setValue(value + 75 / image.length);
+        break;
+      default:
+    }
+  }, [value2]);
   const createProduct = () => {
-    prod_name && prod_desc && prod_loc && image.length > 0
-      ? console.log("Set")
-      : console.log("Nops");
+    setLoad(true);
+    setValue(2);
+    setTitle("Creating document..");
+    prod_name &&
+      prod_desc &&
+      prod_loc &&
+      image.length > 0 &&
+      addDoc(collection(db, "Products"), {
+        name: prod_name,
+        desc: prod_desc,
+        loc: prod_loc,
+        user: userid,
+      }).then((dic) => {
+        setValue(25);
+        setTitle("Uploading Images..");
+        //uploadFile(dic.id, image.length - 1, image.length);
+        //image.map((img, i) => uploadFile(dic.id, img, i));
+        setProdId(dic.id);
+        Promise.all(
+          image.map(
+            (im, i) =>
+              fetch(im.uri).then((dc) => {
+                dc.blob().then((blob) =>
+                  uploadBytes(
+                    ref(storage, `products/${dic.id}/images${i}.jpg`),
+                    blob,
+                    {
+                      contentType: "image/jpeg",
+                    }
+                  ).then((dc) => {
+                    getDownloadURL(
+                      ref(storage, `products/${dic.id}/images${i}.jpg`)
+                    ).then((downloadURL) => {
+                      //console.log(i, downloadURL);
+                      updateDoc(
+                        doc(db, "Products", dic.id),
+                        { images: arrayUnion(downloadURL) },
+                        { merge: true }
+                      ).finally(() => setValue2(i));
+                    });
+                  })
+                );
+              })
+            //.finally(() => console.log(`Final.Done${i}`))
+          )
+        );
+      });
   };
-  const uploadFile = async () => {
-    const response = await fetch(image[0].uri);
-    const blob = await response.blob();
-    const metadata = {
-      contentType: "image/jpeg",
-    };
-    // Upload file and metadata to the object 'images/mountains.jpg'
-    const storageRef = ref(storage, "images/images1.jpg");
-    const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
-    // Listen for state changes, errors, and completion of the upload.
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-        }
-      },
-      (error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
-        switch (error.code) {
-          case "storage/unauthorized":
-            // User doesn't have permission to access the object
-            break;
-          case "storage/canceled":
-            // User canceled the upload
-            break;
-          // ...
-          case "storage/unknown":
-            // Unknown error occurred, inspect error.serverResponse
-            break;
-        }
-      },
-      () => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
+  const uploadFile = async (id, im, i) => {
+    //setTitle(`Uploading Images..`);
+    //console.log("stage 1");
+    //setTitle(`Uploading Image ${n - i}..`);
+    //const response = await fetch(image[i].uri);
+    //const blob = await response.blob();
+    fetch(im.uri)
+      .then((dc) => {
+        dc.blob().then((blob) => {
+          const metadata = {
+            contentType: "image/jpeg",
+          };
+          uploadBytesResumable(
+            ref(storage, `products/${id}/images${i}.jpg`),
+            blob,
+            metadata
+          ).then((dc) => {
+            getDownloadURL(ref(storage, `products/${id}/images${i}.jpg`)).then(
+              (downloadURL) => {
+                console.log(i, downloadURL);
+                updateDoc(
+                  doc(db, "Products", id),
+                  { images: arrayUnion(downloadURL) },
+                  { merge: true }
+                );
+              }
+            );
+          });
         });
-      }
-    );
+      })
+      .then(() => console.log(`Done${i}`));
   };
+
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.6,
       quality: 1,
-    });
-    if (!result.cancelled) {
-      const manipResult = await manipulateAsync(
-        result.uri,
-        [{ resize: { height: 200, width: 300 } }],
-        {
+    }).then(
+      (result) =>
+        !result.cancelled &&
+        manipulateAsync(result.uri, [{ resize: { height: 200, width: 300 } }], {
           compress: 1,
-        }
-      );
-      setImage([...image, { id: image.length, uri: manipResult.uri }]);
-    }
+        }).then((dc) =>
+          setImage([...image, { id: image.length, uri: dc.uri, prog: 0 }])
+        )
+    );
   };
-  return (
-    <View style={tw("flex flex-col h-full")}>
-      <View style={tw("flex flex-col h-1/3 bg-indigo-700")}></View>
+
+  return !comp ? (
+    <ScrollView keyboardShouldPersistTaps="handled" style={tw("flex flex-col")}>
+      <View
+        style={tw(
+          "flex flex-col items-center justify-center bg-indigo-700 py-4"
+        )}
+      >
+        <CircularProgress
+          value={value}
+          radius={120}
+          valueSuffix={"%"}
+          title={title}
+          titleColor={"white"}
+          titleStyle={tw("text-sm -mt-2")}
+          //   progressValueColor={"#ecf0f1"}
+          //   activeStrokeColor={"#f39c12"}
+          //   inActiveStrokeColor={"#9b59b6"}
+          inActiveStrokeOpacity={0.5}
+          inActiveStrokeWidth={20}
+          activeStrokeWidth={30}
+        />
+      </View>
 
       <View style={tw("flex flex-col")}>
         <TextInput
@@ -208,7 +287,32 @@ const NewProduct = ({ route }) => {
           <Text style={tw("text-white text-center")}>Create</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
+  ) : (
+    <>
+      <View
+        style={tw(
+          "flex flex-col items-center justify-center bg-indigo-700 h-full"
+        )}
+      >
+        <Icon name="checkcircle" type="antdesign" color="white" size={120} />
+        <Text style={tw("text-3xl font-bold text-white mt-6")}>Done</Text>
+        <Text style={tw("text-xs font-bold text-white mt-6")}>
+          Your product is added successfully.
+        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ProductScreen", { data: prodID })}
+        >
+          <Text
+            style={tw(
+              "text-xs font-bold text-indigo-600 mt-6 px-3 py-2 bg-white rounded-full"
+            )}
+          >
+            View product
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 };
 

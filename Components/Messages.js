@@ -143,7 +143,6 @@ function Messages() {
               from: "me",
             }
           ).then(() => {
-            console.log("Done");
             navigation.navigate("MessageScreen", {
               userid: user.id,
               thread: tid,

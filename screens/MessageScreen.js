@@ -5,6 +5,8 @@ import {
   TextInput,
   Dimensions,
   StyleSheet,
+  Image,
+  StatusBar,
 } from "react-native";
 import * as Progress from "react-native-progress";
 import React, { useEffect, useRef, useState } from "react";
@@ -24,8 +26,47 @@ import tw from "tailwind-rn";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/core";
-import { FlatList, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
+const Product = ({ proID }) => {
+  const [proDATA, setProData] = useState();
+  const navigation = useNavigation();
+  useEffect(
+    () =>
+      getDoc(doc(db, "Products", proID)).then((dc) =>
+        setProData({
+          img: dc.data().images[0],
+          name: dc.data().name,
+          desc: dc.data().desc,
+        })
+      ),
+    []
+  );
 
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.push("ProductScreen", { data: proID })}
+      style={[
+        tw(
+          "flex flex-row items-center bg-indigo-200 border border-indigo-200 p-2"
+        ),
+        { minWidth: 200, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+      ]}
+    >
+      <Image
+        style={tw("w-10 h-10 rounded-md")}
+        source={{ uri: proDATA?.img }}
+      />
+      <View style={tw("flex flex-col ml-3")}>
+        <Text style={tw("text-white text-base text-indigo-600 font-bold")}>
+          {proDATA?.name}
+        </Text>
+        <Text style={tw("text-white text-xs text-indigo-600 font-bold")}>
+          {proDATA?.desc}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 const MessageScreen = ({ route }) => {
   const messageRef = useRef();
   const userid = route.params.userid;
@@ -33,35 +74,63 @@ const MessageScreen = ({ route }) => {
   const navigation = useNavigation();
   const [load, setLoad] = useState(false);
   const [msg, setMsg] = useState();
+  const [prodID, setProdID] = useState(route.params.prodID);
   const [msgs, setMsgs] = useState();
   const [userThread, setUserThread] = useState();
   const PAGE_DIM = Dimensions.get("window");
   const sendMsg = () => {
     msg && setLoad(true);
-    msg &&
-      addDoc(
-        collection(db, "Profiles", userid, "Messages", thread, "messages"),
-        {
-          data: msg,
-          read: false,
-          time: serverTimestamp(),
-          from: "me",
-        }
-      ).then(
-        addDoc(
-          collection(db, "Profiles", thread, "Messages", userid, "messages"),
+    msg && prodID
+      ? addDoc(
+          collection(db, "Profiles", userid, "Messages", thread, "messages"),
           {
             data: msg,
             read: false,
             time: serverTimestamp(),
-            from: "you",
+            from: "me",
+            product: prodID,
           }
-        ).then(() => {
-          setMsg(null);
-          messageRef.current.scrollToEnd({ animated: true });
-          setLoad(false);
-        })
-      );
+        ).then(
+          addDoc(
+            collection(db, "Profiles", thread, "Messages", userid, "messages"),
+            {
+              data: msg,
+              read: false,
+              time: serverTimestamp(),
+              from: "you",
+              product: prodID,
+            }
+          ).then(() => {
+            setMsg(null);
+            setProdID(null);
+            messageRef.current.scrollToEnd({ animated: true });
+            setLoad(false);
+          })
+        )
+      : msg &&
+        addDoc(
+          collection(db, "Profiles", userid, "Messages", thread, "messages"),
+          {
+            data: msg,
+            read: false,
+            time: serverTimestamp(),
+            from: "me",
+          }
+        ).then(
+          addDoc(
+            collection(db, "Profiles", thread, "Messages", userid, "messages"),
+            {
+              data: msg,
+              read: false,
+              time: serverTimestamp(),
+              from: "you",
+            }
+          ).then(() => {
+            setMsg(null);
+            messageRef.current.scrollToEnd({ animated: true });
+            setLoad(false);
+          })
+        );
   };
   useEffect(() => {
     getDoc(doc(db, "Profiles", thread)).then((dc) =>
@@ -77,6 +146,7 @@ const MessageScreen = ({ route }) => {
           dc.docs.map((dic) => ({
             text: dic.data().data,
             from: dic.data().from,
+            product: dic.data().product,
           }))
         )
     );
@@ -86,6 +156,7 @@ const MessageScreen = ({ route }) => {
   }, [msgs]);
   return (
     <View style={tw("flex flex-col h-full justify-between bg-gray-100")}>
+      <StatusBar barStyle="light-content" backgroundColor="#4338ca" />
       <View style={tw("flex flex-row items-center bg-indigo-700 p-4")}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Icon
@@ -114,9 +185,10 @@ const MessageScreen = ({ route }) => {
             <View
               style={{
                 backgroundColor: "#6366f1",
-                padding: 10,
+                //overflow: "hidden",
+                //padding: 10,
                 marginLeft: "45%",
-                borderRadius: 5,
+                //borderRadius: 5,
                 marginTop: 5,
                 marginRight: "5%",
                 maxWidth: "50%",
@@ -125,11 +197,14 @@ const MessageScreen = ({ route }) => {
               }}
               key={index}
             >
-              <Text style={{ fontSize: 16, color: "#fff" }} key={index}>
-                {item.text}
-              </Text>
-              <View style={styles.rightArrow}></View>
-              <View style={styles.rightArrowOverlap}></View>
+              {item.product && <Product proID={item.product} />}
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontSize: 16, color: "#fff" }} key={index}>
+                  {item.text}
+                </Text>
+                <View style={styles.rightArrow}></View>
+                <View style={styles.rightArrowOverlap}></View>
+              </View>
             </View>
           ) : (
             <View
@@ -162,64 +237,40 @@ const MessageScreen = ({ route }) => {
         )}
         <View style={tw("h-4")}></View>
       </ScrollView>
-      <View style={tw("flex flex-row items-center p-3")}>
-        <TextInput
-          underlineColorAndroid="transparent"
-          onChangeText={(value) => setMsg(value)}
-          value={msg}
-          style={tw("bg-indigo-100 text-lg py-3 px-4 w-full rounded-xl")}
-        />
-        {load ? (
-          <Progress.CircleSnail
-            style={tw("h-8 w-8 -ml-11 rounded-lg items-center")}
-            size={30}
-            color={["#a5b4fc"]}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={sendMsg}
-            style={tw("bg-indigo-500 h-9 w-9 -ml-11 rounded-lg items-center")}
-          >
-            <Icon
-              name="paper-plane"
-              type="entypo"
-              color="white"
-              size={22}
-              style={tw("mt-1.5")}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-      {/* <View style={tw("flex flex-row items-center bg-indigo-400 w-full p-3")}>
-        <TextInput
-          onChangeText={(value) => setMsg(value)}
-          value={msg}
-          style={[
-            tw(
-              "border border-indigo-200  bg-indigo-300 text-base text-white py-2 px-5 rounded-full"
-            ),
-            { width: PAGE_DIM.width - 60 },
-          ]}
-        />
-        {load ? (
-          <Progress.CircleSnail style={tw("ml-2 ")} size={30} color={["red"]} />
-        ) : (
-          <TouchableOpacity
+      <View style={tw("flex flex-col p-3")}>
+        {prodID && <Product proID={route.params.prodID} />}
+        <View style={tw("flex flex-row items-center ")}>
+          <TextInput
+            underlineColorAndroid="transparent"
+            onChangeText={(value) => setMsg(value)}
+            value={msg}
             style={tw(
-              " ml-1 bg-indigo-800 h-10 flex items-center justify-center w-10 rounded-full"
+              "bg-indigo-100 text-lg py-3 px-4 w-full " +
+                (prodID ? "rounded-b-xl" : "rounded-xl")
             )}
-            onPress={() => sendMsg()}
-          >
-            <Icon
-              name="arrowup"
-              type="antdesign"
-              color={"white"}
-              style={tw(" text-gray-400")}
-              size={25}
+          />
+          {load ? (
+            <Progress.CircleSnail
+              style={tw("h-8 w-8 -ml-11 rounded-lg items-center")}
+              size={30}
+              color={["#a5b4fc"]}
             />
-          </TouchableOpacity>
-        )}
-      </View> */}
+          ) : (
+            <TouchableOpacity
+              onPress={sendMsg}
+              style={tw("bg-indigo-500 h-9 w-9 -ml-11 rounded-lg items-center")}
+            >
+              <Icon
+                name="paper-plane"
+                type="entypo"
+                color="white"
+                size={22}
+                style={tw("mt-1.5")}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
     </View>
   );
 };
