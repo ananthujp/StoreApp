@@ -27,7 +27,7 @@ import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native";
-const Product = ({ proID }) => {
+const Product = ({ proID, left }) => {
   const [proDATA, setProData] = useState();
   const navigation = useNavigation();
   useEffect(
@@ -41,15 +41,22 @@ const Product = ({ proID }) => {
       ),
     []
   );
-
-  return (
+  return proDATA ? (
     <TouchableOpacity
       onPress={() => navigation.push("ProductScreen", { data: proID })}
       style={[
         tw(
-          "flex flex-row items-center bg-indigo-200 border border-indigo-200 p-2"
+          "flex flex-row items-center  p-2" +
+            (left ? " bg-gray-200" : " bg-indigo-200")
         ),
-        { minWidth: 200, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+        {
+          minWidth: 200,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderLeftWidth: left ? 0 : 5,
+          borderRightWidth: left ? 5 : 0,
+          borderColor: left ? "#4a494a" : "#7A4069",
+        },
       ]}
     >
       <Image
@@ -57,14 +64,26 @@ const Product = ({ proID }) => {
         source={{ uri: proDATA?.img }}
       />
       <View style={tw("flex flex-col ml-3")}>
-        <Text style={tw("text-white text-base text-indigo-600 font-bold")}>
+        <Text
+          style={[
+            tw("text-white text-base font-bold"),
+            { color: left ? "#4a494a" : "#7A4069" },
+          ]}
+        >
           {proDATA?.name}
         </Text>
-        <Text style={tw("text-white text-xs text-indigo-600 font-bold")}>
+        <Text
+          style={[
+            tw("text-white text-xs opacity-50 text-indigo-400 font-bold"),
+            { color: left ? "#a6a4a6" : "#7A4069" },
+          ]}
+        >
           {proDATA?.desc}
         </Text>
       </View>
     </TouchableOpacity>
+  ) : (
+    <></>
   );
 };
 const MessageScreen = ({ route }) => {
@@ -156,7 +175,7 @@ const MessageScreen = ({ route }) => {
   }, [msgs]);
   return (
     <View style={tw("flex flex-col h-full justify-between bg-gray-100")}>
-      <StatusBar barStyle="light-content" backgroundColor="#4338ca" />
+      {/* <StatusBar barStyle="light-content" backgroundColor="#4338ca" /> */}
       <View style={tw("flex flex-row items-center bg-indigo-700 p-4")}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Icon
@@ -185,10 +204,7 @@ const MessageScreen = ({ route }) => {
             <View
               style={{
                 backgroundColor: "#6366f1",
-                //overflow: "hidden",
-                //padding: 10,
                 marginLeft: "45%",
-                //borderRadius: 5,
                 marginTop: 5,
                 marginRight: "5%",
                 maxWidth: "50%",
@@ -210,7 +226,7 @@ const MessageScreen = ({ route }) => {
             <View
               style={{
                 backgroundColor: "#dedede",
-                padding: 10,
+                //padding: 10,
                 borderRadius: 5,
                 marginTop: 5,
                 marginLeft: "5%",
@@ -220,18 +236,21 @@ const MessageScreen = ({ route }) => {
               }}
               key={index}
             >
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "#000",
-                  justifyContent: "center",
-                }}
-                key={index}
-              >
-                {item.text}
-              </Text>
-              <View style={styles.leftArrow}></View>
-              <View style={styles.leftArrowOverlap}></View>
+              {item.product && <Product left={true} proID={item.product} />}
+              <View style={{ padding: 10 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "#000",
+                    justifyContent: "center",
+                  }}
+                  key={index}
+                >
+                  {item.text}
+                </Text>
+                <View style={styles.leftArrow}></View>
+                <View style={styles.leftArrowOverlap}></View>
+              </View>
             </View>
           )
         )}

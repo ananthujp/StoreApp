@@ -24,6 +24,7 @@ import Messages from "../Components/Messages";
 import useAuth from "../hooks/userAuth";
 import storage from "../storage";
 import AdsProfile from "../Components/AdsProfile";
+import WishlistProfile from "../Components/WishlistProfile";
 const ITEMS = ["Item 1", "Item 2", "Item 3", "Item 4"];
 const Profile = () => {
   const { user, setUser } = useAuth();
@@ -32,7 +33,6 @@ const Profile = () => {
   const navigation = useNavigation();
   const Tabs = [
     { name: "Messages", icon: "inbox", command: "message" },
-    { name: "Orders", icon: "tag", command: "orders" },
     { name: "Ads", icon: "camera", command: "ads" },
     { name: "Wish list", icon: "smile", command: "wishlist" },
   ];
@@ -143,10 +143,20 @@ const Profile = () => {
       </View>
     );
   };
-
+  const { setHavatar, setStatusBar } = useAuth();
+  useEffect(() => {
+    setStatusBar({
+      color: "#4338ca",
+      content: "light-content",
+    });
+    console.log("called");
+  }, []);
   return (
     <View>
       <View
+        onLayout={(event) => {
+          setHavatar(event.nativeEvent.layout.height);
+        }}
         style={tw(
           "flex flex-row justify-between w-full items-center px-6 py-2"
         )}
@@ -179,10 +189,11 @@ const Profile = () => {
           type="antdesign"
           color="white"
           onPress={() => {
-            setUser(null);
-            storage.remove({
-              key: "userState",
-            });
+            navigation.navigate("Settings");
+            // setUser(null);
+            // storage.remove({
+            //   key: "userState",
+            // });
           }}
         />
       </View>
@@ -209,50 +220,11 @@ const Profile = () => {
                 case "message":
                   return <Messages />;
                   break;
-                case "orders":
-                  return (
-                    <View
-                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
-                      height={PAGE_DIM.height - 350}
-                      width={PAGE_DIM.width}
-                    >
-                      <ScrollView style={tw("flex w-full")}>
-                        {Orders.orders.map((doc, i) => (
-                          <ListItemOrder
-                            key={`orders.list.${i}`}
-                            item={doc.title}
-                            logo={doc.logo}
-                            category={doc.category}
-                            moreInfo={Orders.moreInfoIcon}
-                          />
-                        ))}
-                      </ScrollView>
-                    </View>
-                  );
-                  break;
                 case "ads":
                   return <AdsProfile />;
                   break;
                 case "wishlist":
-                  return (
-                    <View
-                      style={tw("flex flex-col px-2 mt-2 rounded-md")}
-                      height={PAGE_DIM.height - 350}
-                      width={PAGE_DIM.width}
-                    >
-                      <ScrollView style={tw("flex w-full")}>
-                        {Orders.orders.map((doc, i) => (
-                          <ListItemWishlist
-                            key={`orders.list.${i}`}
-                            item={doc.title}
-                            logo={doc.logo}
-                            category={doc.category}
-                            moreInfo={Orders.moreInfoIcon}
-                          />
-                        ))}
-                      </ScrollView>
-                    </View>
-                  );
+                  return <WishlistProfile />;
                   break;
                 default:
               }
@@ -260,51 +232,6 @@ const Profile = () => {
           />
         </View>
       </View>
-      {/* 
-      <View style={tw("flex flex-row justify-between w-full px-2 mt-4")}>
-        <TouchableOpacity onPress={() => setTab(0)}>
-          <Counter
-            selection={tab === 0 ? true : false}
-            icon="inbox"
-            text="Messages"
-            count="03"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTab(1)}>
-          <Counter
-            selection={tab === 1 ? true : false}
-            icon="tag"
-            text="Orders"
-            count="03"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTab(2)}>
-          <Counter
-            selection={tab === 2 ? true : false}
-            icon="camera"
-            text="Ads"
-            count="12"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTab(3)}>
-          <Counter
-            selection={tab === 3 ? true : false}
-            icon="smile"
-            text="Wish list"
-            count="51"
-          />
-        </TouchableOpacity>
-      </View> */}
-      {/* <View
-        style={tw("flex flex-col mx-2 mt-2 rounded-md")}
-        height={PAGE_DIM.height - 350}
-      >
-        <View>
-          {ITEMS.map((doc) => (
-            <ListItem item={doc} moreInfo={Orders.moreInfoIcon} />
-          ))}
-        </View>
-      </View> */}
     </View>
   );
 };

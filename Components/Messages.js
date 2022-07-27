@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
+import * as Progress from "react-native-progress";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { TextInput } from "react-native";
@@ -86,10 +87,11 @@ function Messages() {
   const [search, setSearch] = useState(false);
   const [profiles, setProfiles] = useState();
   const [results, setResults] = useState();
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   useEffect(() => {
     user &&
-      onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) =>
+      onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) => {
         setThread(
           dc.docs.map((dic) => ({
             id: dic.id,
@@ -97,8 +99,10 @@ function Messages() {
             icon: dic.data().icon,
             //messages: dic.data().messages,
           }))
-        )
-      );
+        );
+        setLoading(false);
+      });
+    return () => setThread(null);
   }, [user]);
   useEffect(() => {
     onSnapshot(collection(db, "Profiles"), (dc) =>
@@ -229,12 +233,20 @@ function Messages() {
         />
         <Text style={tw("ml-2 mr-2 text-white text-center")}>New Message</Text>
       </TouchableOpacity>
-      {threads && (
-        <ScrollView style={tw("flex w-full")}>
-          {threads.map((doc, i) => (
-            <ListItem key={`thread.${doc.id}`} item={doc} index={i} />
-          ))}
-        </ScrollView>
+      {loading ? (
+        <Progress.CircleSnail
+          size={100}
+          thickness={1}
+          color={["red", "white"]}
+        />
+      ) : (
+        threads && (
+          <ScrollView style={tw("flex w-full")}>
+            {threads.map((doc, i) => (
+              <ListItem key={`thread.${doc.id}`} item={doc} index={i} />
+            ))}
+          </ScrollView>
+        )
       )}
     </View>
   );

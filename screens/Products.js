@@ -25,6 +25,7 @@ const Products = () => {
             : "https://thumbs.dreamstime.com/b/no-entry-entrance-sign-prohibition-restriction-road-signal-stock-vector-illustration-clip-art-graphics-235013463.jpg",
           title: dic.data().name,
           cost: dic.data().price,
+          loc: dic.data().loc,
         }))
       )
     );

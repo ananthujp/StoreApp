@@ -20,25 +20,32 @@ import { SharedElement } from "react-navigation-shared-element";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
+  query,
   serverTimestamp,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import useAuth from "../hooks/userAuth";
 import { useNavigation } from "@react-navigation/core";
+import UserProf from "./UserProf";
 
 const ProductScreen = ({ route }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const PAGE_DIM = Dimensions.get("window");
   const [prodData, setProdData] = useState();
   const [threads, setThread] = useState();
+  const [wish, setWish] = useState({ flag: false });
   //const ProdImages = route.params.images;
   const navigation = useNavigation();
   const ProdID = route.params.data;
-  const { user } = useAuth();
+  const { user, setStatusBar } = useAuth();
   useEffect(() => {
     user &&
       onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) =>
@@ -51,11 +58,29 @@ const ProductScreen = ({ route }) => {
           }))
         )
       );
+    user &&
+      onSnapshot(
+        query(
+          collection(db, "Profiles", user.id, "Wishlist"),
+          where("id", "==", ProdID)
+        ),
+        (dc) =>
+          dc.docs.map((dic) => dic.id && setWish({ flag: true, id: dic.id }))
+      );
   }, [user]);
   useEffect(() => {
     getDoc(doc(db, "Products", ProdID)).then((dc) =>
       setProdData({ id: dc.id, data: dc.data() })
     );
+    setStatusBar({
+      color: "white",
+      content: "dark-content",
+    });
+    return () =>
+      setStatusBar({
+        color: "#4338ca",
+        content: "light-content",
+      });
   }, []);
   const Backdrop = ({ scrollX }) => {
     return (
@@ -83,6 +108,13 @@ const ProductScreen = ({ route }) => {
         })}
       </View>
     );
+  };
+  const addToWishlist = () => {
+    !wish.flag
+      ? addDoc(collection(db, "Profiles", user.id, "Wishlist"), { id: ProdID })
+      : deleteDoc(doc(db, "Profiles", user.id, "Wishlist", wish.id)).then(() =>
+          setWish({ flag: false })
+        );
   };
   const newMessage = (tid) => {
     const matches = threads?.filter((element) => {
@@ -118,7 +150,7 @@ const ProductScreen = ({ route }) => {
   };
   return (
     <SafeAreaView>
-      <StatusBar animated barStyle="dark-content" backgroundColor="white" />
+      {/* <StatusBar animated barStyle="dark-content" backgroundColor="white" /> */}
       <View style={tw("flex flex-col w-full bg-gray-50 h-full")}>
         <View style={tw("flex flex-col items-center")}>
           <View style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}>
@@ -178,11 +210,18 @@ const ProductScreen = ({ route }) => {
           </View>
           <Backdrop scrollX={scrollX} />
           <TouchableOpacity
+            onPress={addToWishlist}
             style={tw(
-              "flex bg-red-600 flex-col items-center px-1 pt-2.5 h-10 w-10 rounded-full"
+              "flex flex-col items-center px-1 pt-2.5 h-10 w-10 rounded-full" +
+                (wish.flag ? " bg-white" : " bg-red-600")
             )}
           >
-            <Icon name="heart" type="antdesign" color="white" size={20} />
+            <Icon
+              name="heart"
+              type="antdesign"
+              color={wish.flag ? "red" : "white"}
+              size={20}
+            />
           </TouchableOpacity>
         </View>
         <BottomSheet
@@ -206,11 +245,12 @@ const ProductScreen = ({ route }) => {
                 </Text>
               </View>
             </View>
-            <View>
+            <View style={tw("flex flex-row items-center")}>
+              <Icon name="place" type="material" color="red" size={20} />
               <Text
                 style={[tw("text-lg text-indigo-900"), styles.fontStylelite]}
               >
-                Built to save from dust, particles etc
+                {prodData?.data.loc}
               </Text>
             </View>
             <View>
@@ -224,6 +264,7 @@ const ProductScreen = ({ route }) => {
                 {prodData?.data.desc}
               </Text>
             </View>
+            {prodData?.data.user && <UserProf id={prodData.data.user} />}
             <Comments ProdID={ProdID} />
           </BottomSheetScrollView>
         </BottomSheet>

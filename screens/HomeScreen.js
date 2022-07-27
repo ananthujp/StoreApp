@@ -2,8 +2,8 @@ import {
   View,
   Text,
   Button,
-  StatusBar,
   ImageBackground,
+  StatusBar,
   Dimensions,
   StyleSheet,
 } from "react-native";
@@ -24,15 +24,14 @@ import BottomSheet, {
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import Stores from "./Stores";
-
+import Constants from "expo-constants";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
-  <View style={[styless.statusBar, { backgroundColor }]}>
-    <SafeAreaView>
+  <View style={[{ backgroundColor }]}>
+    <SafeAreaView style={{ marginTop: Platform.OS === "ios" ? -44 : 0 }}>
       <StatusBar translucent backgroundColor={backgroundColor} {...props} />
     </SafeAreaView>
   </View>
 );
-
 const HomeScreen = () => {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -44,19 +43,22 @@ const HomeScreen = () => {
 
   const PAGE_DIM = Dimensions.get("window");
   const navigation = useNavigation();
-  const { signInWithGoogle } = useAuth();
-  const { user } = useAuth();
-  const { logout } = useAuth();
+  const { heightAvatar, setStatusBar } = useAuth();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
-
+  useEffect(() => {
+    setStatusBar({
+      color: "#4338ca",
+      content: "light-content",
+    });
+  }, []);
   return (
-    <SafeAreaView>
-      <StatusBar barStyle="light-content" backgroundColor="#4338ca" />
-      {/* <MyStatusBar backgroundColor="#7C3AED" barStyle="light-content" /> */}
+    <>
+      {/* <StatusBar barStyle="light-content" backgroundColor="#4338ca" /> */}
+
       <View style={tw("flex flex-col h-full w-full bg-indigo-700")}>
         <Profile />
 
@@ -89,26 +91,29 @@ const HomeScreen = () => {
               </BottomSheetScrollView>
             );
           }}
-          snapPoints={[185, PAGE_DIM.height - 64]}
+          snapPoints={[
+            185,
+            PAGE_DIM.height - heightAvatar - (Platform.OS === "ios" ? 44 : 0),
+            // + StatusBar.currentHeight,
+          ]}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
-
 const styless = StyleSheet.create({
   container: {
     flex: 1,
   },
-  statusBar: {
-    height: STATUSBAR_HEIGHT,
-  },
-  appBar: {
-    backgroundColor: "#79B45D",
-    height: APPBAR_HEIGHT,
-  },
+  // statusBar: {
+  //   height: STATUSBAR_HEIGHT,
+  // },
+  // appBar: {
+  //   backgroundColor: "#79B45D",
+  //   height: APPBAR_HEIGHT,
+  // },
   content: {
     flex: 1,
     backgroundColor: "#33373B",

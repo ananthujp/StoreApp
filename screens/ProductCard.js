@@ -29,7 +29,9 @@ const ProductCard = ({ data, i }) => {
       animation="zoomInDown"
       delay={i * 100}
       style={[
-        tw("flex flex-col justify-between bg-white rounded-xl mx-1 my-1"),
+        tw(
+          "flex flex-col justify-between bg-white rounded-xl mx-1 my-2 relative overflow-hidden"
+        ),
         styles.shadow,
         { width: Width, height: 1.4 * Width },
       ]}
@@ -40,14 +42,17 @@ const ProductCard = ({ data, i }) => {
         {/* <Text style={[styles.fontStyle,tw('ml-4 text-2xl')]}>
                     All Products
                 </Text> */}
-        <View style={tw("flex flex-row justify-between p-3")}>
+        <View
+          style={tw("flex flex-row justify-between p-3 absolute z-50 w-full")}
+        >
           <View
             style={tw(
-              "flex flex-col bg-blue-300 px-2 justify-center h-5 rounded-2xl"
+              "flex flex-row items-center bg-blue-500 px-2 justify-center h-5 rounded-2xl"
             )}
           >
-            <Text style={[styles.fontStyle, tw("text-white text-sm")]}>
-              30%
+            <Icon name="place" type="material" color="red" size={15} />
+            <Text style={[styles.fontStyle, tw("text-white text-xs")]}>
+              {data?.loc?.length > 7 ? data?.loc.slice(0, 8) + ".." : data?.loc}
             </Text>
           </View>
           <TouchableOpacity
@@ -60,7 +65,7 @@ const ProductCard = ({ data, i }) => {
         </View>
         <View style={tw("flex items-center ")}>
           <SharedElement id={`item.${data.img}.img`}>
-            <Image style={tw("w-32 h-32 ")} source={{ uri: data.img }} />
+            <Image style={tw("w-48 h-36 ")} source={{ uri: data.img }} />
           </SharedElement>
         </View>
         <View style={tw("flex flex-col justify-center")}>

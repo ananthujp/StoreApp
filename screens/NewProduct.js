@@ -7,9 +7,20 @@ import {
   ScrollView,
   Image,
 } from "react-native";
+import Svg, {
+  G,
+  Path,
+  LinearGradient,
+  Stop,
+  Defs,
+  Use,
+  ClipPath,
+  Ellipse,
+  Circle,
+} from "react-native-svg";
 import React, { useEffect, useState } from "react";
 import tw from "tailwind-rn";
-import { Icon } from "react-native-elements";
+import { Avatar, Icon } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import { db, storage } from "../firebase";
 import {
@@ -30,6 +41,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/core";
+import { styles } from "./Styles";
+import useAuth from "../hooks/userAuth";
 const NewProduct = ({ route }) => {
   const userid = route.params.userid;
   const [image, setImage] = useState([]);
@@ -37,12 +50,20 @@ const NewProduct = ({ route }) => {
   const [prod_name, setProdName] = useState();
   const [prod_desc, setProdDesc] = useState();
   const [prod_loc, setProdLoc] = useState();
+  const [prod_price, setProdPrice] = useState();
   const [comp, setComp] = useState(false);
   const [value, setValue] = useState(0);
   const [prodID, setProdId] = useState(0);
   const [value2, setValue2] = useState();
   const [title, setTitle] = useState("");
+  const { user, setStatusBar } = useAuth();
   const navigation = useNavigation();
+  useEffect(() => {
+    setStatusBar({
+      color: "#4338ca",
+      content: "light-content",
+    });
+  }, []);
   useEffect(() => {
     value === 100 && setComp(true);
   }, [value]);
@@ -70,11 +91,13 @@ const NewProduct = ({ route }) => {
     prod_name &&
       prod_desc &&
       prod_loc &&
+      prod_price &&
       image.length > 0 &&
       addDoc(collection(db, "Products"), {
         name: prod_name,
         desc: prod_desc,
         loc: prod_loc,
+        price: prod_price,
         user: userid,
       }).then((dic) => {
         setValue(25);
@@ -112,49 +135,49 @@ const NewProduct = ({ route }) => {
         );
       });
   };
-  const uploadFile = async (id, im, i) => {
-    //setTitle(`Uploading Images..`);
-    //console.log("stage 1");
-    //setTitle(`Uploading Image ${n - i}..`);
-    //const response = await fetch(image[i].uri);
-    //const blob = await response.blob();
-    fetch(im.uri)
-      .then((dc) => {
-        dc.blob().then((blob) => {
-          const metadata = {
-            contentType: "image/jpeg",
-          };
-          uploadBytesResumable(
-            ref(storage, `products/${id}/images${i}.jpg`),
-            blob,
-            metadata
-          ).then((dc) => {
-            getDownloadURL(ref(storage, `products/${id}/images${i}.jpg`)).then(
-              (downloadURL) => {
-                console.log(i, downloadURL);
-                updateDoc(
-                  doc(db, "Products", id),
-                  { images: arrayUnion(downloadURL) },
-                  { merge: true }
-                );
-              }
-            );
-          });
-        });
-      })
-      .then(() => console.log(`Done${i}`));
-  };
+  // const uploadFile = async (id, im, i) => {
+  //   //setTitle(`Uploading Images..`);
+  //   //console.log("stage 1");
+  //   //setTitle(`Uploading Image ${n - i}..`);
+  //   //const response = await fetch(image[i].uri);
+  //   //const blob = await response.blob();
+  //   fetch(im.uri)
+  //     .then((dc) => {
+  //       dc.blob().then((blob) => {
+  //         const metadata = {
+  //           contentType: "image/jpeg",
+  //         };
+  //         uploadBytesResumable(
+  //           ref(storage, `products/${id}/images${i}.jpg`),
+  //           blob,
+  //           metadata
+  //         ).then((dc) => {
+  //           getDownloadURL(ref(storage, `products/${id}/images${i}.jpg`)).then(
+  //             (downloadURL) => {
+  //               console.log(i, downloadURL);
+  //               updateDoc(
+  //                 doc(db, "Products", id),
+  //                 { images: arrayUnion(downloadURL) },
+  //                 { merge: true }
+  //               );
+  //             }
+  //           );
+  //         });
+  //       });
+  //     })
+  //     .then(() => console.log(`Done${i}`));
+  // };
 
   const pickImage = async () => {
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     }).then(
       (result) =>
         !result.cancelled &&
-        manipulateAsync(result.uri, [{ resize: { height: 200, width: 300 } }], {
+        manipulateAsync(result.uri, [{ resize: { height: 300, width: 300 } }], {
           compress: 1,
         }).then((dc) =>
           setImage([...image, { id: image.length, uri: dc.uri, prog: 0 }])
@@ -169,23 +192,63 @@ const NewProduct = ({ route }) => {
           "flex flex-col items-center justify-center bg-indigo-700 py-4"
         )}
       >
-        <CircularProgress
-          value={value}
-          radius={120}
-          valueSuffix={"%"}
-          title={title}
-          titleColor={"white"}
-          titleStyle={tw("text-sm -mt-2")}
-          //   progressValueColor={"#ecf0f1"}
-          //   activeStrokeColor={"#f39c12"}
-          //   inActiveStrokeColor={"#9b59b6"}
-          inActiveStrokeOpacity={0.5}
-          inActiveStrokeWidth={20}
-          activeStrokeWidth={30}
-        />
+        {load ? (
+          <CircularProgress
+            value={value}
+            radius={120}
+            valueSuffix={"%"}
+            title={title}
+            titleColor={"white"}
+            titleStyle={tw("text-sm -mt-2")}
+            //   progressValueColor={"#ecf0f1"}
+            //   activeStrokeColor={"#f39c12"}
+            //   inActiveStrokeColor={"#9b59b6"}
+            inActiveStrokeOpacity={0.5}
+            inActiveStrokeWidth={20}
+            activeStrokeWidth={30}
+          />
+        ) : (
+          <View style={tw("flex flex-row items-center w-full justify-between")}>
+            <View style={tw("flex flex-row items-center")}>
+              <Icon
+                raised
+                name={"plus"}
+                type="antdesign"
+                color="gray"
+                size={26}
+                style={tw("w-16")}
+              />
+              <View style={tw("flex flex-col ml-2")}>
+                <Text style={[tw("text-white text-xl"), styles.fontStyle]}>
+                  Add
+                </Text>
+                <Text
+                  style={[tw("text-white text-base"), styles.fontStyleXlite]}
+                >
+                  New Product
+                </Text>
+              </View>
+            </View>
+            <View style={tw("flex flex-col items-center mx-2")}>
+              <Avatar
+                rounded
+                size={50}
+                source={{
+                  uri: user
+                    ? user.dp
+                    : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+                }}
+              />
+
+              <Text style={[styles.fontStylelite, tw(" text-xs text-white")]}>
+                {user?.name}
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
 
-      <View style={tw("flex flex-col")}>
+      <View style={tw("flex flex-col ")}>
         <TextInput
           value={prod_name}
           onChangeText={(value) => setProdName(value)}
@@ -256,6 +319,16 @@ const NewProduct = ({ route }) => {
           onChangeText={(value) => setProdLoc(value)}
           underlineColorAndroid="transparent"
           placeholder="Location {example : Hiqom Hostel}"
+          style={tw(
+            " py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
+          )}
+        />
+        <TextInput
+          value={prod_price}
+          onChangeText={(value) => setProdPrice(value)}
+          underlineColorAndroid="transparent"
+          keyboardType="numeric"
+          placeholder="Expected Price (in rupees)"
           style={tw(
             " py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
           )}

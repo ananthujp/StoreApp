@@ -9,21 +9,29 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import tw from "tailwind-rn";
 import { SharedElement } from "react-navigation-shared-element";
 import { styles } from "./Styles";
 import * as Animatable from "react-native-animatable";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useAuth from "../hooks/userAuth";
 
 const StoryScreen = ({ navigation, route }) => {
   const [id, setId] = useState(route.params.item);
+  const { setStatusBar } = useAuth();
   const items = route.params.items;
   //const id = route.params.id;
   const PAGE_DIM = Dimensions.get("window");
   const scrollY = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
+  useEffect(() => {
+    setStatusBar({
+      color: "#4338ca",
+      content: "light-content",
+    });
+  }, []);
   return (
     <SafeAreaView>
       <View style={tw("flex bg-transparent h-full")}>
