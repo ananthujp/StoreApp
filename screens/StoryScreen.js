@@ -35,12 +35,7 @@ const StoryScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView>
       <View style={tw("flex bg-transparent h-full")}>
-        <StatusBar
-        //animated
-        // barStyle="light-content"
-        // backgroundColor="black"
-        //translucent backgroundColor="transparent"
-        />
+        <StatusBar />
         <Animatable.View
           animation="fadeInDown"
           delay={600}
@@ -146,10 +141,7 @@ const StoryScreen = ({ navigation, route }) => {
                 </ScrollView>
                 <View style={tw("flex flex-row mt-1 justify-evenly")}>
                   <View style={tw("bg-white p-2 rounded-xl")}>
-                    <Text>View More</Text>
-                  </View>
-                  <View style={tw("bg-white p-2 w-20 rounded-xl")}>
-                    <Text style={tw("text-center")}>Buy</Text>
+                    <Text>Visit Store</Text>
                   </View>
                 </View>
               </Animated.View>

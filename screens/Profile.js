@@ -25,12 +25,16 @@ import useAuth from "../hooks/userAuth";
 import storage from "../storage";
 import AdsProfile from "../Components/AdsProfile";
 import WishlistProfile from "../Components/WishlistProfile";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 const ITEMS = ["Item 1", "Item 2", "Item 3", "Item 4"];
 const Profile = () => {
   const { user, setUser } = useAuth();
+  const [count, setCount] = useState({});
   const PAGE_DIM = Dimensions.get("window");
   const [tab, setTab] = useState(0);
   const navigation = useNavigation();
+
   const Tabs = [
     { name: "Messages", icon: "inbox", command: "message" },
     { name: "Ads", icon: "camera", command: "ads" },
@@ -135,7 +139,7 @@ const Profile = () => {
                   { backgroundColor: bgColor },
                 ]}
               >
-                <Counter icon={dc.icon} text={dc.name} count="03" />
+                <Counter icon={dc.icon} text={dc.name} />
               </Animated.View>
             </TouchableOpacity>
           );
@@ -149,7 +153,6 @@ const Profile = () => {
       color: "#4338ca",
       content: "light-content",
     });
-    console.log("called");
   }, []);
   return (
     <View>

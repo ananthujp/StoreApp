@@ -42,8 +42,8 @@ const ListItemWishlist = ({ item, index, category, listID }) => {
       onPress={() => navigation.push("ProductScreen", { data: item })}
       style={[
         tw(
-          " rounded-xl my-1 py-2 px-4 flex flex-col border-b border-purple-400" +
-            (index === 0 ? " border-t border-b" : " border-b")
+          " rounded-xl my-1 py-2 px-4 flex flex-col  border-purple-400" +
+            (index === 0 ? " border-t " : " ")
         ),
       ]}
     >

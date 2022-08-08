@@ -60,7 +60,7 @@ const AdsProfile = () => {
           size={20}
         />
         <Text style={tw("ml-2 mr-2 text-white text-center")}>
-          Post a new ad
+          Add new product
         </Text>
       </TouchableOpacity>
       <ScrollView style={tw("w-full")}>

@@ -66,9 +66,7 @@ const Settings = () => {
       </View>
       <Text style={[tw(" text-xs text-gray-400 mt-8 ml-4")]}>ACCOUNT</Text>
       <View
-        style={tw(
-          "px-2 flex items-left justify-center mt-2 bg-gray-50 mx-2 rounded-xl"
-        )}
+        style={tw("px-2 flex justify-center mt-2 bg-gray-50 mx-2 rounded-xl")}
       >
         <View
           style={tw(

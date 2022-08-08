@@ -26,9 +26,11 @@ const Products = () => {
           title: dic.data().name,
           cost: dic.data().price,
           loc: dic.data().loc,
+          rating: dic.data().rating ? dic.data().rating : 0,
         }))
       )
     );
+    return () => setProducts(null);
   }, []);
   return (
     <View style={tw("flex flex-col w-full bg-gray-50 rounded-b-2xl")}>
@@ -52,16 +54,7 @@ const Products = () => {
             },
           ]}
         >
-          {/* <BottomSheetFlatList
-                //scrollEnabled={true}
-                data={ProdData}
-                renderItem={renderItem}
-                numColumns={2}
-                keyExtractor={item => item.id}
-            /> */}
-
           {products?.map((item, index) => {
-            // <ProductCard data={item} i={index}/>
             return (
               <ProductCard data={item} i={index} key={`pdcard.${index}.cd`} />
             );

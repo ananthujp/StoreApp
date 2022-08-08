@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { Text, View, Dimensions, TouchableOpacity, Image } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { styles } from "./Styles";
 import tw from "tailwind-rn";
@@ -13,6 +6,7 @@ import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/core";
 import { SharedElement } from "react-navigation-shared-element";
 import * as Animatable from "react-native-animatable";
+import { Rating } from "react-native-ratings";
 
 const ProductCard = ({ data, i }) => {
   const navigation = useNavigation();
@@ -39,9 +33,6 @@ const ProductCard = ({ data, i }) => {
       <TouchableOpacity
         onPress={() => navigation.push("ProductScreen", { data: data.id })}
       >
-        {/* <Text style={[styles.fontStyle,tw('ml-4 text-2xl')]}>
-                    All Products
-                </Text> */}
         <View
           style={tw("flex flex-row justify-between p-3 absolute z-50 w-full")}
         >
@@ -84,14 +75,17 @@ const ProductCard = ({ data, i }) => {
           </View>
         </View>
         <View style={tw("flex flex-row justify-center")}>
-          <Icon name="star" type="antdesign" color="#F4E185" size={15} />
-          <Icon name="star" type="antdesign" color="#F4E185" size={15} />
-          <Icon name="star" type="antdesign" color="#F4E185" size={15} />
-          <Icon name="star" type="antdesign" color="#F4E185" size={15} />
+          <Rating
+            type="star"
+            ratingCount={5}
+            imageSize={20}
+            readonly
+            startingValue={data.rating}
+          />
           <Text
             style={[styles.fontStylelite, tw("ml-2 text-xs text-gray-400")]}
           >
-            (4.5)
+            ({data.rating})
           </Text>
         </View>
         <View></View>

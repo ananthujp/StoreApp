@@ -20,6 +20,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import tw from "tailwind-rn";
@@ -162,11 +163,27 @@ const MessageScreen = ({ route }) => {
       ),
       (dc) =>
         setMsgs(
-          dc.docs.map((dic) => ({
-            text: dic.data().data,
-            from: dic.data().from,
-            product: dic.data().product,
-          }))
+          dc.docs.map((dic) => {
+            !dic.data().read &&
+              updateDoc(
+                doc(
+                  db,
+                  "Profiles",
+                  userid,
+                  "Messages",
+                  thread,
+                  "messages",
+                  dic.id
+                ),
+                { read: true },
+                { merge: true }
+              );
+            return {
+              text: dic.data().data,
+              from: dic.data().from,
+              product: dic.data().product,
+            };
+          })
         )
     );
   }, []);

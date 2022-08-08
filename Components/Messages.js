@@ -240,6 +240,7 @@ function Messages() {
           color={["red", "white"]}
         />
       ) : (
+        user &&
         threads && (
           <ScrollView style={tw("flex w-full")}>
             {threads.map((doc, i) => (

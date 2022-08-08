@@ -18,6 +18,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/core";
+import logo from "../Images/login.png";
 const Login = () => {
   //const { signInWithGoogle } = useAuth();
   const navigation = useNavigation();
@@ -86,6 +87,7 @@ const Login = () => {
               dp: dc.data().dp,
               email: dc.data().email,
               username: dc.data().username,
+              store: dc.data().store ? true : false,
             });
             setStatus(1);
             navigation.navigate("Home");
@@ -132,7 +134,16 @@ const Login = () => {
     <>
       {loginscreen ? (
         <View style={tw("h-full flex items-center")}>
-          <View style={tw("flex flex-row w-full h-1/2 bg-indigo-700")}></View>
+          <View
+            style={tw(
+              "flex flex-row items-center justify-center w-full h-1/2 bg-indigo-700"
+            )}
+          >
+            <Image
+              style={[tw("h-4/5 "), { resizeMode: "contain" }]}
+              source={logo}
+            />
+          </View>
           <Text
             style={tw(
               "mt-6 text-center " +
@@ -161,7 +172,7 @@ const Login = () => {
               />
               <TextInput
                 onChangeText={(value) => setUsername(value)}
-                placeholder="Username"
+                placeholder="Enter your username"
                 keyboardType="default"
                 value={username}
                 editable={status === 1 ? false : true}

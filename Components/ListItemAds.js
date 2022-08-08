@@ -41,8 +41,8 @@ const ListItemAds = ({ item, logo, category, index, id }) => {
       onPress={() => navigation.push("ProductScreen", { data: id })}
       style={[
         tw(
-          " rounded-xl my-1 py-2 px-4 w-full flex flex-col border-b border-purple-400" +
-            (index === 0 ? " border-t border-b" : " border-b")
+          " rounded-xl my-1 py-2 px-4 w-full flex flex-col  border-purple-400" +
+            (index === 0 ? " border-t " : " ")
         ),
       ]}
     >

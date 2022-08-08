@@ -25,6 +25,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Stores from "./Stores";
 import Constants from "expo-constants";
+import Actions from "./Actions";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View style={[{ backgroundColor }]}>
     <SafeAreaView style={{ marginTop: Platform.OS === "ios" ? -44 : 0 }}>
@@ -63,7 +64,6 @@ const HomeScreen = () => {
         <Profile />
 
         <BottomSheet
-          // ref={bottomSheetRef}
           index={1}
           handleComponent={() => (
             <View
@@ -84,8 +84,8 @@ const HomeScreen = () => {
           children={() => {
             return (
               <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+                {/* <Actions /> */}
                 <Stories />
-                {/* <View style={tw('w-full bg-gray-50 h-16 flex rounded-t-2xl -mt-20')}></View> */}
                 <Stores />
                 <Products />
               </BottomSheetScrollView>

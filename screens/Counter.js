@@ -3,7 +3,7 @@ import { styles } from "./Styles";
 import React from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements/dist/icons/Icon";
-const Counter = ({ icon, text, count }) => {
+const Counter = ({ icon, text }) => {
   return (
     <View
       style={tw(
@@ -18,9 +18,9 @@ const Counter = ({ icon, text, count }) => {
       >
         {text}
       </Text>
-      <Text style={[styles.fontStyle, { color: "#4338ca" }, tw("text-sm")]}>
+      {/* <Text style={[styles.fontStyle, { color: "#4338ca" }, tw("text-sm")]}>
         {count}
-      </Text>
+      </Text> */}
     </View>
   );
 };

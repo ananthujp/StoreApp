@@ -6,6 +6,7 @@ import {
   Dimensions,
   StatusBar,
   Animated,
+  Button,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import tw from "tailwind-rn";
@@ -13,7 +14,7 @@ import { Icon } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./Styles";
 //import { FlatList } from 'react-native-gesture-handler'
-import { Image } from "react-native";
+import { Image, Modal } from "react-native";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Comments from "./Comments";
 import { SharedElement } from "react-navigation-shared-element";
@@ -35,17 +36,33 @@ import { db } from "../firebase";
 import useAuth from "../hooks/userAuth";
 import { useNavigation } from "@react-navigation/core";
 import UserProf from "./UserProf";
+import { Rating } from "react-native-ratings";
 
 const ProductScreen = ({ route }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const PAGE_DIM = Dimensions.get("window");
   const [prodData, setProdData] = useState();
   const [threads, setThread] = useState();
+  const [rating, setRating] = useState(null);
   const [wish, setWish] = useState({ flag: false });
   //const ProdImages = route.params.images;
   const navigation = useNavigation();
   const ProdID = route.params.data;
   const { user, setStatusBar } = useAuth();
+  const handleRating = () => {
+    setModalVisible(!modalVisible);
+    const rateings = (prodData?.data.ratings ? prodData?.data.ratings : 0) + 1;
+    const rateing =
+      ((prodData?.data.rating ? prodData?.data.rating : 0) * (rateings - 1) +
+        rating) /
+      rateings;
+    rating &&
+      updateDoc(
+        doc(db, "Products", ProdID),
+        { rating: rateing, ratings: rateings },
+        { merge: true }
+      );
+  };
   useEffect(() => {
     user &&
       onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) =>
@@ -69,7 +86,7 @@ const ProductScreen = ({ route }) => {
       );
   }, [user]);
   useEffect(() => {
-    getDoc(doc(db, "Products", ProdID)).then((dc) =>
+    onSnapshot(doc(db, "Products", ProdID), (dc) =>
       setProdData({ id: dc.id, data: dc.data() })
     );
     setStatusBar({
@@ -148,9 +165,11 @@ const ProductScreen = ({ route }) => {
           })
         );
   };
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <SafeAreaView>
       {/* <StatusBar animated barStyle="dark-content" backgroundColor="white" /> */}
+
       <View style={tw("flex flex-col w-full bg-gray-50 h-full")}>
         <View style={tw("flex flex-col items-center")}>
           <View style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}>
@@ -233,17 +252,70 @@ const ProductScreen = ({ route }) => {
               <Text style={[tw("text-3xl text-indigo-900"), styles.fontStyle]}>
                 {prodData?.data.name}
               </Text>
-              <View style={tw("flex flex-row")}>
-                <Icon name="star" type="antdesign" color="#F4E185" size={21} />
-                <Text
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View
                   style={[
-                    tw("ml-2 text-base text-gray-400"),
-                    styles.fontStylelite,
+                    tw("mx-8 bg-white border border-yellow-400 rounded-lg"),
+                    { marginTop: 0.45 * PAGE_DIM.height },
                   ]}
                 >
-                  (4.5)
+                  <Rating
+                    showRating
+                    type="star"
+                    imageSize={25}
+                    onFinishRating={(e) => setRating(e)}
+                    style={{ paddingVertical: 10 }}
+                  />
+                  <Button
+                    onPress={() => handleRating()}
+                    title="OK"
+                    color="#FEC260"
+                    accessibilityLabel="Learn more about this purple button"
+                  />
+                </View>
+              </Modal>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={tw("flex flex-col items-end")}
+              >
+                <View style={tw("flex flex-row")}>
+                  <Icon
+                    name="star"
+                    type="antdesign"
+                    color="#F4E185"
+                    size={21}
+                  />
+                  <Text
+                    style={[
+                      tw("ml-2 text-base text-gray-400"),
+                      styles.fontStylelite,
+                    ]}
+                  >
+                    (
+                    {prodData?.data.rating
+                      ? prodData?.data.rating.toFixed(1)
+                      : 0}
+                    )
+                  </Text>
+                </View>
+                <Text
+                  style={[
+                    tw("ml-2 text-gray-400"),
+                    styles.fontStylelite,
+                    { fontSize: 10 },
+                  ]}
+                >
+                  Total ratings :
+                  {prodData?.data.ratings ? prodData?.data.ratings : 0}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={tw("flex flex-row items-center")}>
               <Icon name="place" type="material" color="red" size={20} />

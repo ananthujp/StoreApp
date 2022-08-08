@@ -1,17 +1,36 @@
 import { View, Text, TouchableOpacity, Dimensions, Image } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import { styles } from "./Styles";
-import { StoreData } from "./Data";
+// import { StoreData } from "./Data";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { FlatList } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/core";
 import { SharedElement } from "react-native-shared-element";
+import { useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Stores = () => {
   const PAGE_DIM = Dimensions.get("window");
   const navigation = useNavigation();
+  const [StoreData, setStores] = useState();
+  useEffect(() => {
+    getDocs(collection(db, "Stores")).then((dc) =>
+      setStores(
+        dc.docs.map((dic, i) => ({
+          id: i,
+          ids: dic.id,
+          title: dic.data().title,
+          logo: dic.data().logo,
+          subtitle: dic.data().subtitle,
+          storeID: dic.data().storeID,
+          rating: dic.data().rating ? dic.data().rating : 0,
+        }))
+      )
+    );
+  }, []);
   const StoreCard = ({ data, i }) => {
     return (
       <TouchableOpacity
@@ -27,7 +46,7 @@ const Stores = () => {
         <SharedElement style={[tw("absolute bottom-0")]} id={`item.${i}.store`}>
           <Image
             style={[tw(" h-32 w-28"), { resizeMode: "cover" }]}
-            source={data.logo}
+            source={{ uri: data.logo }}
           />
         </SharedElement>
         <View
@@ -36,7 +55,9 @@ const Stores = () => {
           )}
         >
           <View style={tw("flex flex-row bg-blue-300 px-1 rounded-full")}>
-            <Text style={[tw("mr-1 text-white"), styles.fontStyle]}>4.8</Text>
+            <Text style={[tw("mr-1 text-white"), styles.fontStyle]}>
+              {data.rating.toFixed(1)}
+            </Text>
             <Icon name="star" type="antdesign" color="yellow" size={14} />
           </View>
           <View>
@@ -69,13 +90,15 @@ const Stores = () => {
         </View>
       </TouchableOpacity>
       <View style={[tw("flex px-4 py-4 ")]}>
-        <FlatList
-          horizontal
-          data={StoreData}
-          renderItem={renderItem}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-        />
+        {StoreData && (
+          <FlatList
+            horizontal
+            data={StoreData}
+            renderItem={renderItem}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </View>
     </View>
   );
