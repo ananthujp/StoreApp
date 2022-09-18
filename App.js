@@ -1,14 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import {NavigationContainer} from "@react-navigation/native"
-import StackNavigator from './StackNavigator'
-import {AuthProvider} from './hooks/userAuth'
+import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigator from "./StackNavigator";
+import { AuthProvider } from "./hooks/userAuth";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
-//import AsyncStorage from '@react-native-community/async-storage';
 
-// import useFonts hook  
 import { useFonts } from "@use-expo/font";
 const customFonts = {
   GilroySm: require("./assets/fonts/Gilroy-Thin.ttf"),
@@ -20,13 +16,13 @@ const customFonts = {
 export default function App() {
   const [isLoaded] = useFonts(customFonts);
   if (!isLoaded) {
-        return (<></>);
-    }
-  
+    return <></>;
+  }
+
   return (
     <NavigationContainer>
       <AuthProvider>
-      <StackNavigator/>
+        <StackNavigator />
       </AuthProvider>
     </NavigationContainer>
   );
@@ -35,8 +31,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

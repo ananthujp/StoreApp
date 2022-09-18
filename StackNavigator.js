@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StatusBar, Platform } from "react-native";
+import { View, Text, SafeAreaView, StatusBar } from "react-native";
 import React from "react";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { enableScreens } from "react-native-screens";
@@ -13,6 +13,7 @@ import StoreScreen from "./screens/StoreScreen";
 import MessageScreen from "./screens/MessageScreen";
 import NewProduct from "./screens/NewProduct";
 import Settings from "./screens/Settings";
+
 const Stack = createSharedElementStackNavigator();
 enableScreens();
 const MyStatusBar = ({ backgroundColor, ...props }) => (
@@ -20,6 +21,7 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
     <SafeAreaView
       style={{
         marginTop: Platform.OS === "ios" ? 44 : StatusBar.currentHeight,
+        //marginTop: StatusBar.currentHeight,
       }}
     >
       <StatusBar translucent backgroundColor={backgroundColor} {...props} />

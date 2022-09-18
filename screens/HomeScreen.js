@@ -5,7 +5,7 @@ import {
   ImageBackground,
   StatusBar,
   Dimensions,
-  StyleSheet,
+  //StyleSheet,
 } from "react-native";
 import React, { useLayoutEffect, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -86,6 +86,9 @@ const HomeScreen = () => {
               <BottomSheetScrollView showsVerticalScrollIndicator={false}>
                 {/* <Actions /> */}
                 <Stories />
+                <View className="w-8 h-8 bg-red-400">
+                  <Text>A</Text>
+                </View>
                 <Stores />
                 <Products />
               </BottomSheetScrollView>
@@ -103,20 +106,20 @@ const HomeScreen = () => {
 };
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
-const styless = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  // statusBar: {
-  //   height: STATUSBAR_HEIGHT,
-  // },
-  // appBar: {
-  //   backgroundColor: "#79B45D",
-  //   height: APPBAR_HEIGHT,
-  // },
-  content: {
-    flex: 1,
-    backgroundColor: "#33373B",
-  },
-});
+// const styless = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//   },
+//   // statusBar: {
+//   //   height: STATUSBAR_HEIGHT,
+//   // },
+//   // appBar: {
+//   //   backgroundColor: "#79B45D",
+//   //   height: APPBAR_HEIGHT,
+//   // },
+//   content: {
+//     flex: 1,
+//     backgroundColor: "#33373B",
+//   },
+// });
 export default HomeScreen;

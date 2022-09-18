@@ -136,6 +136,9 @@ const StoreScreen = ({ route }) => {
               accessibilityLabel="Learn more about this purple button"
             />
           </View> */}
+          <View>
+            <Text>Store Info</Text>
+          </View>
         </View>
         <SharedElement style={[tw(" w-1/4 -mx-4 mt-4")]} id={`item.${i}.store`}>
           <Image
