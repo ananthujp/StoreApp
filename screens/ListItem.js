@@ -61,17 +61,17 @@ const ListItem = ({ item, index }) => {
         ),
       ]}
     >
-      <View style={tw("flex flex-row justify-between ")}>
-        <View style={tw("flex flex-row items-start")}>
+      <View className="flex flex-row justify-between ">
+        <View className="flex flex-row items-start">
           <Image
-            style={tw("w-16 h-16 rounded-full")}
+            className="w-16 h-16 rounded-full"
             source={{
               uri: userD
                 ? userD.dp
                 : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
             }}
           />
-          <View style={tw("flex flex-col items-start ml-2")}>
+          <View className="flex flex-col items-start ml-2">
             <Text
               style={[
                 styles.fontStyle,
@@ -91,13 +91,9 @@ const ListItem = ({ item, index }) => {
             </Text>
           </View>
         </View>
-        <View style={tw("flex flex-col items-center justify-around mx-2")}>
+        <View className="flex flex-col items-center justify-around mx-2">
           {unread && (
-            <TouchableOpacity
-              style={tw(
-                "bg-white w-8 h-8 items-center justify-center rounded-full opacity-75"
-              )}
-            >
+            <TouchableOpacity className="bg-white w-8 h-8 items-center justify-center rounded-full opacity-75">
               <Text>1</Text>
             </TouchableOpacity>
           )}

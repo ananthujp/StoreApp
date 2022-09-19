@@ -9,7 +9,7 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import tw from "tailwind-rn";
 import { styles } from "./Styles";
 import { SharedElement } from "react-native-shared-element";
@@ -27,6 +27,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { Rating } from "react-native-ratings";
+import useAuth from "../hooks/userAuth";
+import { useNavigation } from "@react-navigation/core";
 const StoreScreen = ({ route }) => {
   const data = route.params.data;
   const PAGE_DIM = Dimensions.get("window");
@@ -35,6 +37,7 @@ const StoreScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [products, setProducts] = useState();
   const [prodData, setProdData] = useState();
+  const { setStatusBar } = useAuth();
   useEffect(() => {
     onSnapshot(doc(db, "Stores", data.ids), (dc) =>
       setProdData({ id: dc.id, data: dc.data() })
@@ -72,9 +75,27 @@ const StoreScreen = ({ route }) => {
       )
     );
   }, []);
+  useLayoutEffect(() => {
+    setStatusBar({
+      color: "#f3f4f6",
+      content: "dark-content",
+    });
+  }, []);
+  const navigation = useNavigation();
   return (
     <View>
-      <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+      <TouchableOpacity
+        className="mr-auto ml-4 my-4"
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Icon
+          name="arrowleft"
+          type="antdesign"
+          color={"gray"}
+          style={tw(" text-gray-400 ml-2 mr-4")}
+          size={25}
+        />
+      </TouchableOpacity>
       <Modal
         animationType="slide"
         transparent={true}
@@ -104,7 +125,7 @@ const StoreScreen = ({ route }) => {
           />
         </View>
       </Modal>
-      <View style={[tw("flex flex-row items-center mt-8")]}>
+      <View style={[tw("flex flex-row items-center")]}>
         <View style={[tw("flex flex-col px-4 py-4 w-3/4")]}>
           <Text style={[tw("text-3xl"), styles.fontStyle]}>{data.title}</Text>
           <Text style={[tw("text-4xl"), styles.fontStyle]}>

@@ -100,7 +100,7 @@ const Profile = () => {
   const flatListRef = useRef(null);
   const Backdrop = ({ scrollX }) => {
     return (
-      <View style={tw("flex flex-row items-center")}>
+      <View className="flex flex-row items-center">
         {Tabs.map((dc, i) => {
           const inputRange = [
             (i - 1) * PAGE_DIM.width,
@@ -133,11 +133,8 @@ const Profile = () => {
             >
               <Animated.View
                 key={`bdc1.${i}.element`}
-                style={[
-                  tw("flex mx-1 h-12  rounded-full"),
-                  { width: scale },
-                  { backgroundColor: bgColor },
-                ]}
+                className="flex mx-1 h-12  rounded-full"
+                style={[{ width: scale }, { backgroundColor: bgColor }]}
               >
                 <Counter icon={dc.icon} text={dc.name} />
               </Animated.View>
@@ -160,11 +157,9 @@ const Profile = () => {
         onLayout={(event) => {
           setHavatar(event.nativeEvent.layout.height);
         }}
-        style={tw(
-          "flex flex-row justify-between w-full items-center px-6 py-2"
-        )}
+        className="flex flex-row justify-between w-full items-center px-6 py-2"
       >
-        <View style={tw("flex flex-row items-center")}>
+        <View className="flex flex-row items-center">
           <Avatar
             rounded
             size={50}
@@ -200,11 +195,11 @@ const Profile = () => {
           }}
         />
       </View>
-      <View style={tw("flex w-full items-center")}>
+      <View className="flex w-full items-center">
         <Backdrop scrollX={scrollX} />
       </View>
-      <View style={tw("flex flex-col items-center")}>
-        <View style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}>
+      <View className="flex flex-col items-center">
+        <View className="overflow-hidden w-full">
           <Animated.FlatList
             horizontal
             data={Tabs}

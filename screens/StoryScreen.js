@@ -9,7 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
 import tw from "tailwind-rn";
 import { SharedElement } from "react-navigation-shared-element";
 import { styles } from "./Styles";
@@ -17,7 +17,8 @@ import * as Animatable from "react-native-animatable";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useAuth from "../hooks/userAuth";
-
+import { Icon } from "react-native-elements";
+import { useIsFocused } from "@react-navigation/native";
 const StoryScreen = ({ navigation, route }) => {
   const [id, setId] = useState(route.params.item);
   const { setStatusBar } = useAuth();
@@ -26,11 +27,19 @@ const StoryScreen = ({ navigation, route }) => {
   const PAGE_DIM = Dimensions.get("window");
   const scrollY = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
-  useEffect(() => {
-    setStatusBar({
-      color: "#4338ca",
-      content: "light-content",
-    });
+  // useEffect(() => {
+  //   setStatusBar({
+  //     color: "#4338ca",
+  //     content: "light-content",
+  //   });
+  // }, []);
+  const isFocused = useIsFocused();
+  useLayoutEffect(() => {
+    isFocused &&
+      setStatusBar({
+        color: "#4338ca",
+        content: "light-content",
+      });
   }, []);
   return (
     <SafeAreaView>
@@ -50,6 +59,18 @@ const StoryScreen = ({ navigation, route }) => {
             <View
               style={[tw("flex flex-row h-12 items-center"), { zIndex: 40 }]}
             >
+              <TouchableOpacity
+                className="mr-auto"
+                onPress={() => navigation.navigate("Home")}
+              >
+                <Icon
+                  name="arrowleft"
+                  type="antdesign"
+                  color={"gray"}
+                  style={tw(" text-gray-400 ml-0 mr-4")}
+                  size={25}
+                />
+              </TouchableOpacity>
               {Object.keys(items).map((_, i) => {
                 const inputRange = [
                   (i - 1) * PAGE_DIM.height,

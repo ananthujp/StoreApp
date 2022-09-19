@@ -22,50 +22,37 @@ const ProductCard = ({ data, i }) => {
     <Animatable.View
       animation="zoomInDown"
       delay={i * 100}
-      style={[
-        tw(
-          "flex flex-col justify-between bg-white rounded-xl mx-1 my-2 relative overflow-hidden"
-        ),
-        styles.shadow,
-        { width: Width, height: 1.4 * Width },
-      ]}
+      className="flex flex-col ios:w-[47.5%] justify-between bg-white rounded-xl border border-gray-300 pb-4 drop-shadow-md mx-1 my-2 relative overflow-hidden"
+
+      // styles.shadow,
+      // { width: Width, height: 1.4 * Width },
     >
       <TouchableOpacity
         onPress={() => navigation.push("ProductScreen", { data: data.id })}
       >
-        <View
-          style={tw("flex flex-row justify-between p-3 absolute z-50 w-full")}
-        >
-          <View
-            style={tw(
-              "flex flex-row items-center bg-blue-500 px-2 justify-center h-5 rounded-2xl"
-            )}
-          >
+        <View className="flex flex-row justify-between p-3 absolute z-50 w-full">
+          <View className="flex flex-row items-center bg-blue-500 px-2 justify-center h-5 rounded-2xl">
             <Icon name="place" type="material" color="red" size={15} />
             <Text style={[styles.fontStyle, tw("text-white text-xs")]}>
               {data?.loc?.length > 7 ? data?.loc.slice(0, 8) + ".." : data?.loc}
             </Text>
           </View>
-          <TouchableOpacity
-            style={tw(
-              "flex bg-red-600 flex-col items-center p-1 h-6 w-6 rounded-full"
-            )}
-          >
+          <TouchableOpacity className="flex bg-red-600 flex-col items-center p-1 h-6 w-6 rounded-full">
             <Icon name="heart" type="antdesign" color="white" size={15} />
           </TouchableOpacity>
         </View>
-        <View style={tw("flex items-center ")}>
+        <View className="flex items-center ">
           <SharedElement id={`item.${data.img}.img`}>
-            <Image style={tw("w-48 h-36 ")} source={{ uri: data.img }} />
+            <Image className="w-48 h-36 " source={{ uri: data.img }} />
           </SharedElement>
         </View>
-        <View style={tw("flex flex-col justify-center")}>
-          <View style={tw("flex flex-row justify-center ")}>
+        <View className="flex flex-col justify-center">
+          <View className="flex flex-row justify-center ">
             <Text style={[styles.fontStylelite, tw("text-lg text-blue-800")]}>
               {data.title}
             </Text>
           </View>
-          <View style={tw("flex flex-row justify-center -mt-2")}>
+          <View className="flex flex-row justify-center -mt-2">
             <Text style={[styles.fontStyle, tw("text-base text-blue-800")]}>
               ₹
             </Text>
@@ -74,7 +61,7 @@ const ProductCard = ({ data, i }) => {
             </Text>
           </View>
         </View>
-        <View style={tw("flex flex-row justify-center")}>
+        <View className="flex flex-row justify-center">
           <Rating
             type="star"
             ratingCount={5}

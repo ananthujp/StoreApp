@@ -8,7 +8,7 @@ import {
   //StyleSheet,
 } from "react-native";
 import React, { useLayoutEffect, useRef, useEffect } from "react";
-import { useNavigation } from "@react-navigation/core";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
 import tw from "tailwind-rn";
 import useAuth from "../hooks/userAuth";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,30 +45,37 @@ const HomeScreen = () => {
   const PAGE_DIM = Dimensions.get("window");
   const navigation = useNavigation();
   const { heightAvatar, setStatusBar } = useAuth();
+  const isFocused = useIsFocused();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
   useEffect(() => {
-    setStatusBar({
-      color: "#4338ca",
-      content: "light-content",
-    });
-  }, []);
+    isFocused &&
+      setStatusBar({
+        color: "#4338ca",
+        content: "light-content",
+      });
+  }, [isFocused]);
+
+  // useEffect(() => {
+  //   setStatusBar({
+  //     color: "#4338ca",
+  //     content: "light-content",
+  //   });
+  // }, []);
   return (
     <>
       {/* <StatusBar barStyle="light-content" backgroundColor="#4338ca" /> */}
 
-      <View style={tw("flex flex-col h-full w-full bg-indigo-700")}>
+      <View className="flex flex-col h-full w-full bg-indigo-700">
         <Profile />
 
         <BottomSheet
           index={1}
           handleComponent={() => (
-            <View
-              style={tw("flex items-center rounded-t-2xl bg-gray-50 -mb-1")}
-            >
+            <View className="flex items-center rounded-t-2xl bg-gray-50 -mb-1">
               <Icon
                 name="up"
                 spin={true}
@@ -78,7 +85,7 @@ const HomeScreen = () => {
               />
             </View>
           )}
-          style={tw("absolute bg-transparent")}
+          className="absolute bg-transparent"
           animationConfigs={animationConfigs}
           overDragResistanceFactor={2000}
           children={() => {
@@ -86,9 +93,6 @@ const HomeScreen = () => {
               <BottomSheetScrollView showsVerticalScrollIndicator={false}>
                 {/* <Actions /> */}
                 <Stories />
-                <View className="w-8 h-8 bg-red-400">
-                  <Text>A</Text>
-                </View>
                 <Stores />
                 <Products />
               </BottomSheetScrollView>

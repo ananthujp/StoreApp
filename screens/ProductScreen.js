@@ -8,7 +8,7 @@ import {
   Animated,
   Button,
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -85,19 +85,16 @@ const ProductScreen = ({ route }) => {
           dc.docs.map((dic) => dic.id && setWish({ flag: true, id: dic.id }))
       );
   }, [user]);
-  useEffect(() => {
-    onSnapshot(doc(db, "Products", ProdID), (dc) =>
-      setProdData({ id: dc.id, data: dc.data() })
-    );
+  useLayoutEffect(() => {
     setStatusBar({
       color: "white",
       content: "dark-content",
     });
-    return () =>
-      setStatusBar({
-        color: "#4338ca",
-        content: "light-content",
-      });
+  }, []);
+  useEffect(() => {
+    onSnapshot(doc(db, "Products", ProdID), (dc) =>
+      setProdData({ id: dc.id, data: dc.data() })
+    );
   }, []);
   const Backdrop = ({ scrollX }) => {
     return (
@@ -247,8 +244,22 @@ const ProductScreen = ({ route }) => {
           snapPoints={[PAGE_DIM.height / 2.3, PAGE_DIM.height]}
           backgroundStyle={tw("rounded-3xl bg-gray-100")}
         >
-          <BottomSheetScrollView style={tw("flex flex-col mx-8 mt-3")}>
-            <View style={tw("flex flex-row items-center justify-between")}>
+          <BottomSheetScrollView style={tw("flex flex-col mx-8 ")}>
+            <TouchableOpacity
+              className="mr-auto"
+              onPress={() => navigation.navigate("Home")}
+            >
+              <Icon
+                name="arrowleft"
+                type="antdesign"
+                color={"gray"}
+                style={tw(" text-gray-400 ml-0 mr-4")}
+                size={25}
+              />
+            </TouchableOpacity>
+            <View
+              style={tw("flex flex-row items-center justify-between  mt-3")}
+            >
               <Text style={[tw("text-3xl text-indigo-900"), styles.fontStyle]}>
                 {prodData?.data.name}
               </Text>

@@ -49,12 +49,8 @@ const Stores = () => {
             source={{ uri: data.logo }}
           />
         </SharedElement>
-        <View
-          style={tw(
-            "absolute flex justify-between items-end h-full right-0 py-2 mr-2"
-          )}
-        >
-          <View style={tw("flex flex-row bg-blue-300 px-1 rounded-full")}>
+        <View className="absolute flex justify-between items-end h-full right-0 py-2 mr-2">
+          <View className="flex flex-row bg-blue-300 px-1 rounded-full">
             <Text style={[tw("mr-1 text-white"), styles.fontStyle]}>
               {data.rating.toFixed(1)}
             </Text>
@@ -82,8 +78,8 @@ const Stores = () => {
   );
 
   return (
-    <View style={tw("flex flex-col w-full bg-gray-50")}>
-      <TouchableOpacity style={tw("flex flex-row px-6 w-full justify-between")}>
+    <View className="flex flex-col w-full bg-gray-50">
+      <TouchableOpacity className="flex flex-row px-6 w-full justify-between">
         <Text style={[styles.fontStyle, tw("ml-4 text-2xl")]}>All Stores</Text>
         <View>
           <Icon name="down" type="antdesign" color="gray" />

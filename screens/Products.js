@@ -33,9 +33,9 @@ const Products = () => {
     return () => setProducts(null);
   }, []);
   return (
-    <View style={tw("flex flex-col w-full bg-gray-50 rounded-b-2xl")}>
+    <View className="flex flex-col w-full bg-gray-50 rounded-b-2xl">
       <TouchableOpacity
-        style={tw("flex flex-row px-6 w-full justify-between")}
+        className="flex flex-row px-6 w-full justify-between"
         onPress={() => handledown()}
       >
         <Text style={[styles.fontStyle, tw("ml-4 text-2xl")]}>
@@ -46,14 +46,7 @@ const Products = () => {
         </View>
       </TouchableOpacity>
       {icon == "down" ? (
-        <View
-          style={[
-            tw("px-4 py-4 w-full flex flex-row"),
-            {
-              flexWrap: "wrap",
-            },
-          ]}
-        >
+        <View className="px-4 py-4 w-full flex flex-row flex-wrap">
           {products?.map((item, index) => {
             return (
               <ProductCard data={item} i={index} key={`pdcard.${index}.cd`} />

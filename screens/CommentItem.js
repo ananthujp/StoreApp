@@ -14,18 +14,16 @@ const CommentItem = ({ prof, comment, likes }) => {
     );
   }, []);
   return (
-    <View style={tw("flex flex-row items-start mt-3")}>
-      <View
-        style={tw("h-10 w-10 bg-blue-100 rounded-full border-2 border-white")}
-      >
+    <View className="flex flex-row items-start mt-3">
+      <View className="h-10 w-10 bg-blue-100 rounded-full border-2 border-white">
         <Image
           source={{ uri: profile?.image }}
-          style={tw("h-10 w-10 rounded-full")}
+          className="h-10 w-10 rounded-full"
         />
       </View>
-      <View style={tw("flex flex-col ml-4")}>
+      <View className="flex flex-col ml-4">
         <Text style={[tw("text-base"), styles.fontStyle]}>{profile?.name}</Text>
-        <View style={tw("flex flex-row")}>
+        <View className="flex flex-row">
           <Text style={[tw("bg-blue-100 p-3 rounded-b-lg rounded-tr-lg mt-1")]}>
             {comment}
           </Text>

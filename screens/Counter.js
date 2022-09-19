@@ -6,10 +6,8 @@ import { Icon } from "react-native-elements/dist/icons/Icon";
 const Counter = ({ icon, text }) => {
   return (
     <View
-      style={tw(
-        "flex flex-row items-center overflow-hidden py-2 px-2 justify-start"
-        //+(selection && " bg-white")
-      )}
+      className="flex flex-row items-center overflow-hidden py-2 px-2 justify-start"
+      //+(selection && " bg-white")
     >
       <Icon name={icon} type="font-awesome-5" color={"#4338ca"} size={28} />
 

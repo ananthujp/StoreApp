@@ -52,25 +52,25 @@ const Comments = ({ ProdID }) => {
   }, []);
   return (
     <View>
-      <View style={tw("mt-4")}>
+      <View className="mt-4">
         <Text style={[tw("text-lg text-indigo-900"), styles.fontStylelite]}>
           Wanna ask something ?
         </Text>
       </View>
-      <View style={tw("flex flex-row items-center mt-2")}>
+      <View className="flex flex-row items-center mt-2">
         <TextInput
           value={comment}
           onChangeText={(txt) => setComment(txt)}
-          style={tw("bg-indigo-100 text-lg py-3 px-4 w-full rounded-xl")}
+          className="bg-indigo-100 text-lg py-3 px-4 w-full rounded-xl"
         />
 
         <TouchableOpacity
           onPress={handleComment}
-          style={tw("bg-indigo-300 h-9 w-9 -ml-11 rounded-lg items-center")}
+          className="bg-indigo-300 h-9 w-9 -ml-11 rounded-lg items-center"
         >
           {load ? (
             <Progress.CircleSnail
-              style={tw("h-8 w-8 mt-1 rounded-lg items-center")}
+              className="h-8 w-8 mt-1 rounded-lg items-center"
               size={30}
               color={["white"]}
             />
@@ -80,7 +80,7 @@ const Comments = ({ ProdID }) => {
               type="entypo"
               color="white"
               size={22}
-              style={tw("mt-1.5")}
+              className="mt-1.5"
             />
           )}
         </TouchableOpacity>
