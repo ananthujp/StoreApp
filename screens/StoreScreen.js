@@ -59,21 +59,37 @@ const StoreScreen = ({ route }) => {
   };
   useEffect(() => {
     //getDocs(query(collection(db, "Products"),where("user","in",["ckYRZEWlaqrlCIWNYAD2"]))).then((dc) =>
-    getDocs(
-      query(collection(db, "Products"), where("user", "in", [data.storeID]))
-    ).then((dc) =>
-      setProducts(
-        dc.docs.map((dic) => ({
-          id: dic.id,
-          img: dic.data().images
-            ? dic.data().images[0]
-            : "https://thumbs.dreamstime.com/b/no-entry-entrance-sign-prohibition-restriction-road-signal-stock-vector-illustration-clip-art-graphics-235013463.jpg",
-          title: dic.data().name,
-          cost: dic.data().price,
-          loc: dic.data().loc,
-        }))
-      )
-    );
+    data.storeID === "rs_store"
+      ? getDocs(
+          query(collection(db, "Products"), where("used", "in", [true]))
+        ).then((dc) =>
+          setProducts(
+            dc.docs.map((dic) => ({
+              id: dic.id,
+              img: dic.data().images
+                ? dic.data().images[0]
+                : "https://thumbs.dreamstime.com/b/no-entry-entrance-sign-prohibition-restriction-road-signal-stock-vector-illustration-clip-art-graphics-235013463.jpg",
+              title: dic.data().name,
+              cost: dic.data().price,
+              loc: dic.data().loc,
+            }))
+          )
+        )
+      : getDocs(
+          query(collection(db, "Products"), where("user", "in", [data.storeID]))
+        ).then((dc) =>
+          setProducts(
+            dc.docs.map((dic) => ({
+              id: dic.id,
+              img: dic.data().images
+                ? dic.data().images[0]
+                : "https://thumbs.dreamstime.com/b/no-entry-entrance-sign-prohibition-restriction-road-signal-stock-vector-illustration-clip-art-graphics-235013463.jpg",
+              title: dic.data().name,
+              cost: dic.data().price,
+              loc: dic.data().loc,
+            }))
+          )
+        );
   }, []);
   useLayoutEffect(() => {
     setStatusBar({
@@ -133,17 +149,19 @@ const StoreScreen = ({ route }) => {
           </Text>
           <TouchableOpacity
             onPress={() => setModalVisible(true)}
-            style={tw("flex flex-col")}
+            style={tw("flex flex-row  items-center")}
           >
             <View
-              style={tw("flex flex-row bg-blue-300 px-1 w-12 rounded-full")}
+              style={tw(
+                "flex flex-row items-center bg-blue-300 px-1 w-12 rounded-full"
+              )}
             >
               <Text style={[tw("mr-1 text-white"), styles.fontStyle]}>
                 {prodData?.data.rating ? prodData.data.rating.toFixed(1) : 0}
               </Text>
               <Icon name="star" type="antdesign" color="yellow" size={14} />
             </View>
-            <Text style={[tw("mr-1 text-xs"), styles.fontStylelite]}>
+            <Text style={[tw("mr-1 text-xs ml-2"), styles.fontStylelite]}>
               (Total ratings{" "}
               {prodData?.data.ratings ? prodData.data.ratings : 0})
             </Text>
@@ -158,7 +176,7 @@ const StoreScreen = ({ route }) => {
             />
           </View> */}
           <View>
-            <Text>Store Info</Text>
+            <Text className="text-gray-500 text-xs">{prodData?.data.info}</Text>
           </View>
         </View>
         <SharedElement style={[tw(" w-1/4 -mx-4 mt-4")]} id={`item.${i}.store`}>

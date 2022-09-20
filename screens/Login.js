@@ -1,4 +1,10 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 
 import * as Google from "expo-google-app-auth";
@@ -66,6 +72,7 @@ const Login = () => {
       email: userTemp.user.email,
       dp: userTemp.user.photoUrl,
       pass: password.pass1,
+      store: false,
     }).then(() => {
       setStatus(1);
       setloading(false);
@@ -131,7 +138,9 @@ const Login = () => {
       });
   };
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       {loginscreen ? (
         <View style={tw("h-full flex items-center")}>
           <View
@@ -179,6 +188,7 @@ const Login = () => {
                 style={tw(
                   usernameState === 1 ? " text-red-400" : " text-black"
                 )}
+                className="w-full"
               />
             </View>
           </View>
@@ -202,6 +212,7 @@ const Login = () => {
                 secureTextEntry={true}
                 placeholder="Password"
                 keyboardType="default"
+                className="w-full"
               />
             </View>
           </View>
@@ -260,6 +271,7 @@ const Login = () => {
                 keyboardType="default"
                 value={username}
                 editable={status === 1 ? false : true}
+                className="w-full"
                 style={tw(
                   usernameState === 1 ? " text-red-400" : " text-black"
                 )}
@@ -359,6 +371,7 @@ const Login = () => {
                 // style={tw("w-full")}
                 placeholder="Password"
                 keyboardType="default"
+                className="w-full"
               />
             </View>
             {password.pass1 ? (
@@ -394,6 +407,7 @@ const Login = () => {
                 placeholder="Repeat Password"
                 keyboardType="default"
                 editable={status === 1 ? false : true}
+                className="w-full"
                 style={tw(
                   "  mr-2 " +
                     (password.pass1 === password.pass2
@@ -451,7 +465,7 @@ const Login = () => {
           </View>
         </View>
       )}
-    </>
+    </KeyboardAvoidingView>
   );
 };
 

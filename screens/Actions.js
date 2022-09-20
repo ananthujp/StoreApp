@@ -15,9 +15,7 @@ const Actions = () => {
             userid: user.id,
           });
         }}
-        style={tw(
-          "flex flex-col w-20 h-20 items-center bg-gray-300 p-4 rounded-full"
-        )}
+        className="flex flex-col w-20 h-20 items-center bg-gray-300 p-4 rounded-full"
       >
         <Icon
           name="plus"

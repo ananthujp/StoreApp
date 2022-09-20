@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import storage from "../storage";
 //import { View, Text } from 'react-native'
-import * as Google from "expo-google-app-auth";
+//import * as Google from "expo-google-app-auth";
 import { auth, db } from "../firebase";
 import {
   GoogleAuthProvider,

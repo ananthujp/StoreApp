@@ -49,7 +49,7 @@ const NewProduct = ({ route }) => {
   const [load, setLoad] = useState(false);
   const [prod_name, setProdName] = useState();
   const [prod_desc, setProdDesc] = useState();
-  const [prod_loc, setProdLoc] = useState();
+  const [prod_loc, setProdLoc] = useState("");
   const [prod_price, setProdPrice] = useState();
   const [comp, setComp] = useState(false);
   const [value, setValue] = useState(0);
@@ -99,6 +99,7 @@ const NewProduct = ({ route }) => {
         loc: prod_loc,
         price: prod_price,
         user: userid,
+        used: user.store ? false : true,
       }).then((dic) => {
         setValue(25);
         setTitle("Uploading Images..");
@@ -210,14 +211,18 @@ const NewProduct = ({ route }) => {
         ) : (
           <View style={tw("flex flex-row items-center w-full justify-between")}>
             <View style={tw("flex flex-row items-center")}>
-              <Icon
-                raised
-                name={"plus"}
-                type="antdesign"
-                color="gray"
-                size={26}
-                style={tw("w-16")}
-              />
+              <TouchableOpacity
+                className="mr-auto ml-4 my-4"
+                onPress={() => navigation.navigate("Home")}
+              >
+                <Icon
+                  name="arrowleft"
+                  type="antdesign"
+                  color={"gray"}
+                  style={tw(" text-gray-400 ml-2 mr-4")}
+                  size={25}
+                />
+              </TouchableOpacity>
               <View style={tw("flex flex-col ml-2")}>
                 <Text style={[tw("text-white text-xl"), styles.fontStyle]}>
                   Add
@@ -314,25 +319,39 @@ const NewProduct = ({ route }) => {
             </TouchableOpacity>
           )}
         </View>
-        <TextInput
-          value={prod_loc}
-          onChangeText={(value) => setProdLoc(value)}
-          underlineColorAndroid="transparent"
-          placeholder="Location {example : Hiqom Hostel}"
-          style={tw(
-            " py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
-          )}
-        />
-        <TextInput
-          value={prod_price}
-          onChangeText={(value) => setProdPrice(value)}
-          underlineColorAndroid="transparent"
-          keyboardType="numeric"
-          placeholder="Expected Price (in rupees)"
-          style={tw(
-            " py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200 "
-          )}
-        />
+        <View className="fle flex-row items-center py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200">
+          <Icon
+            name="place"
+            type="material"
+            color={"gray"}
+            style={tw(" text-gray-400 mr-2")}
+            size={20}
+          />
+          <TextInput
+            value={prod_loc}
+            onChangeText={(value) => setProdLoc(value)}
+            underlineColorAndroid="transparent"
+            placeholder="Location {example : Hiqom Hostel}"
+            className="w-full"
+          />
+        </View>
+        <View className="fle flex-row items-center py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200">
+          <Icon
+            name="money"
+            type="material"
+            color={"gray"}
+            style={tw(" text-gray-400 mr-2")}
+            size={20}
+          />
+          <TextInput
+            value={prod_price}
+            onChangeText={(value) => setProdPrice(value)}
+            underlineColorAndroid="transparent"
+            keyboardType="numeric"
+            placeholder="Expected Price (in rupees)"
+            className="w-full"
+          />
+        </View>
         <TouchableOpacity
           onPress={createProduct}
           style={[
