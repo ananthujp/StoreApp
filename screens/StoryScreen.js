@@ -19,6 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useAuth from "../hooks/userAuth";
 import { Icon } from "react-native-elements";
 import { useIsFocused } from "@react-navigation/native";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 const StoryScreen = ({ navigation, route }) => {
   const [id, setId] = useState(route.params.item);
   const { setStatusBar } = useAuth();
@@ -41,6 +43,22 @@ const StoryScreen = ({ navigation, route }) => {
         content: "light-content",
       });
   }, []);
+  const gotoStoreScreen = (id) => {
+    getDoc(doc(db, "Stores", id)).then((dic) =>
+      navigation.navigate("StoreScreen", {
+        data: {
+          id: 0,
+          ids: dic.id,
+          title: dic.data().title,
+          logo: dic.data().logo,
+          subtitle: dic.data().subtitle,
+          storeID: dic.data().storeID,
+          rating: dic.data().rating ? dic.data().rating : 0,
+        },
+        index: 0,
+      })
+    );
+  };
   return (
     <SafeAreaView>
       <View style={tw("flex bg-transparent h-full")}>
@@ -161,9 +179,14 @@ const StoryScreen = ({ navigation, route }) => {
                   </Text>
                 </ScrollView>
                 <View style={tw("flex flex-row mt-1 justify-evenly")}>
-                  <View style={tw("bg-white p-2 rounded-xl")}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      gotoStoreScreen(items[Object.keys(items)[i]].user)
+                    }
+                    style={tw("bg-white p-2 rounded-xl")}
+                  >
                     <Text>Visit Store</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </Animated.View>
             );

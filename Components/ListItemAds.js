@@ -18,22 +18,13 @@ const ListItemAds = ({ item, logo, category, index, id }) => {
   const PAGE_DIM = Dimensions.get("window");
   const [exp, setExp] = React.useState(false);
   const deleteItem = () => {
-    deleteDoc(doc(db, "Products", id)).then(
-      () =>
-        listAll(ref(storage, `products/${id}/`)).then((res) => {
-          res.items.forEach((itemRef) => {
-            deleteObject(itemRef);
-          });
-        })
-      // .finally(() => {
-      //   console.log("Done");
-      // })
+    deleteDoc(doc(db, "Products", id)).then(() =>
+      listAll(ref(storage, `products/${id}/`)).then((res) => {
+        res.items.forEach((itemRef) => {
+          deleteObject(itemRef);
+        });
+      })
     );
-    //1efyDvpVaahlJdsiRerS
-
-    // deleteObject(ref(storage, `products/1efyDvpVaahlJdsiRerS/`)).then(() =>
-    //   console.log("DOne")
-    // );
   };
   const navigation = useNavigation();
   return (

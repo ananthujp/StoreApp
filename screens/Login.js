@@ -94,7 +94,8 @@ const Login = () => {
               dp: dc.data().dp,
               email: dc.data().email,
               username: dc.data().username,
-              store: dc.data().store ? true : false,
+              store: dc.data().store,
+              pass: dc.data().pass,
             });
             setStatus(1);
             navigation.navigate("Home");
@@ -143,15 +144,47 @@ const Login = () => {
     >
       {loginscreen ? (
         <View style={tw("h-full flex items-center")}>
-          <View
-            style={tw(
-              "flex flex-row items-center justify-center w-full h-1/2 bg-indigo-700"
-            )}
-          >
-            <Image
-              style={[tw("h-4/5 "), { resizeMode: "contain" }]}
-              source={logo}
-            />
+          <View className="flex flex-row items-center justify-around w-full h-1/5 bg-indigo-700">
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon
+                name="back"
+                type="antdesign"
+                color="white"
+                style={tw(" text-white mr-2")}
+                size={28}
+              />
+            </TouchableOpacity>
+            <View style={tw("flex flex-row items-center justify-center")}>
+              <Icon
+                name="user"
+                type="antdesign"
+                color="white"
+                style={tw(" text-white mr-2")}
+                size={40}
+              />
+              <View className="flex flex-col">
+                <Text className="text-white text-xl">LOGIN</Text>
+                <Text className="text-white text-xs">to your account</Text>
+              </View>
+              <View style={tw("mr-2")}>
+                <Icon
+                  name="back"
+                  type="antdesign"
+                  color="#4338ca"
+                  style={tw(" text-white mr-2")}
+                  size={32}
+                />
+              </View>
+            </View>
+            <View>
+              <Icon
+                name="back"
+                type="antdesign"
+                color="#4338ca"
+                style={tw(" text-white mr-2")}
+                size={32}
+              />
+            </View>
           </View>
           <Text
             style={tw(
@@ -238,7 +271,39 @@ const Login = () => {
         </View>
       ) : (
         <View style={tw("h-full flex items-center")}>
-          <View style={tw("flex flex-row w-full h-1/2 bg-indigo-700")}></View>
+          <View className="flex flex-row items-center justify-around w-full h-1/5 bg-indigo-700">
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon
+                name="back"
+                type="antdesign"
+                color="white"
+                style={tw(" text-white mr-2")}
+                size={32}
+              />
+            </TouchableOpacity>
+            <View style={tw("flex flex-row items-center justify-center")}>
+              <Icon
+                name="user"
+                type="antdesign"
+                color="white"
+                style={tw(" text-white mr-2")}
+                size={40}
+              />
+              <View className="flex flex-col">
+                <Text className="text-white text-xl">SIGN UP</Text>
+                <Text className="text-white text-xs">for an account</Text>
+              </View>
+            </View>
+            <View>
+              <Icon
+                name="back"
+                type="antdesign"
+                color="#4338ca"
+                style={tw(" text-white mr-2")}
+                size={32}
+              />
+            </View>
+          </View>
           <Text
             style={tw(
               "mt-6 " + (status === 1 ? " text-green-600" : " text-red-600")
@@ -257,12 +322,11 @@ const Login = () => {
                 (usernameState === 1 ? " border-red-400" : " border-gray-400")
             )}
           >
-            <View style={tw("flex flex-row justify-start items-center")}>
+            <View className="flex flex-row justify-start items-center">
               <Icon
                 name="user"
                 type="antdesign"
                 color={usernameState === 1 ? "#dc2626" : "black"}
-                style={tw(" text-gray-400 mr-2")}
                 size={20}
               />
               <TextInput
@@ -271,10 +335,11 @@ const Login = () => {
                 keyboardType="default"
                 value={username}
                 editable={status === 1 ? false : true}
-                className="w-full"
-                style={tw(
-                  usernameState === 1 ? " text-red-400" : " text-black"
-                )}
+                className={
+                  "w-full  " + usernameState === 1
+                    ? " text-red-400"
+                    : " text-black"
+                }
               />
             </View>
             {username ? (
@@ -314,14 +379,14 @@ const Login = () => {
                 value={emailInput}
                 editable={emailState === 3 ? false : true}
                 keyboardType="email-address"
-                style={tw(
+                className={
                   "  mr-2 " +
-                    (emailState === 5
-                      ? " text-red-400"
-                      : emailState === 3
-                      ? " text-green-400"
-                      : " text-gray-400")
-                )}
+                  (emailState === 5
+                    ? " text-red-400"
+                    : emailState === 3
+                    ? " text-green-400"
+                    : " text-gray-400")
+                }
               />
             </View>
             {emailState == 2 && (
@@ -371,7 +436,6 @@ const Login = () => {
                 // style={tw("w-full")}
                 placeholder="Password"
                 keyboardType="default"
-                className="w-full"
               />
             </View>
             {password.pass1 ? (
@@ -407,7 +471,6 @@ const Login = () => {
                 placeholder="Repeat Password"
                 keyboardType="default"
                 editable={status === 1 ? false : true}
-                className="w-full"
                 style={tw(
                   "  mr-2 " +
                     (password.pass1 === password.pass2

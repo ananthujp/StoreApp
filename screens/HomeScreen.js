@@ -5,9 +5,12 @@ import {
   ImageBackground,
   StatusBar,
   Dimensions,
+  Modal,
+  TouchableOpacity,
   //StyleSheet,
 } from "react-native";
-import React, { useLayoutEffect, useRef, useEffect } from "react";
+
+import React, { useLayoutEffect, useRef, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/core";
 import tw from "tailwind-rn";
 import useAuth from "../hooks/userAuth";
@@ -26,6 +29,8 @@ import BottomSheet, {
 import Stores from "./Stores";
 import Constants from "expo-constants";
 import Actions from "./Actions";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View style={[{ backgroundColor }]}>
     <SafeAreaView style={{ marginTop: Platform.OS === "ios" ? -44 : 0 }}>
@@ -33,6 +38,63 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
     </SafeAreaView>
   </View>
 );
+const Update = ({ currentVersion }) => {
+  const [modalVisible, setModalVisible] = useState({
+    vis: false,
+    data: null,
+    title: null,
+  });
+  useEffect(() => {
+    getDoc(doc(db, "Version", "ksdDFZmnYg4BYreIhFHu")).then(
+      (dc) =>
+        dc.data().version > currentVersion &&
+        setModalVisible({ vis: true, link: dc.data().update })
+    );
+  }, []);
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible.vis}
+      onRequestClose={() => {
+        setModalVisible({ ...modalVisible, vis: !modalVisible });
+      }}
+    >
+      <View className="ml-[5%] my-auto flex justify-between absolute top-[50%] w-[90%] bg-white border shadow-md border-gray-400 rounded-lg">
+        <View className="flex flex-row items-center justify-between mt-2 mx-2">
+          <View></View>
+          <Text className="text-base font-semibold">Update Available</Text>
+          <TouchableOpacity
+            onPress={() => setModalVisible({ ...modalVisible, vis: false })}
+          >
+            <Icon name="close" type="material" color="black" size={16} />
+          </TouchableOpacity>
+        </View>
+        <View className="mx-4 mt-2">
+          <Text>
+            There is an update available for the current version of the
+            application. Do you want to continue ?
+          </Text>
+        </View>
+        <View className="flex flex-row mt-2">
+          <TouchableOpacity
+            className="w-1/2 flex items-center bg-gray-500 py-1 rounded-bl-md"
+            onPress={() => setModalVisible({ ...modalVisible, vis: false })}
+          >
+            <Text className="text-base font-semibold text-white">Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="w-1/2 flex items-center bg-indigo-500 py-1 rounded-br-md"
+            onPress={() => setModalVisible({ ...modalVisible, vis: false })}
+          >
+            <Text className="text-base font-semibold text-white">Update</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 const HomeScreen = () => {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
@@ -65,10 +127,13 @@ const HomeScreen = () => {
   //     content: "light-content",
   //   });
   // }, []);
+
+  const currentVersion = 1000;
   return (
     <>
       {/* <StatusBar barStyle="light-content" backgroundColor="#4338ca" /> */}
 
+      <Update currentVersion={currentVersion} />
       <View className="flex flex-col h-full w-full bg-indigo-700">
         <Profile />
 

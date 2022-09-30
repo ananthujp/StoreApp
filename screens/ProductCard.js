@@ -49,7 +49,9 @@ const ProductCard = ({ data, i }) => {
         <View className="flex flex-col justify-center">
           <View className="flex flex-row justify-center ">
             <Text style={[styles.fontStylelite, tw("text-lg text-blue-800")]}>
-              {data.title}
+              {data?.title?.length > 12
+                ? data.title.slice(0, 12) + ".."
+                : data.title}
             </Text>
           </View>
           <View className="flex flex-row justify-center -mt-2">

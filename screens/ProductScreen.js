@@ -163,13 +163,17 @@ const ProductScreen = ({ route }) => {
         );
   };
   const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <SafeAreaView>
       {/* <StatusBar animated barStyle="dark-content" backgroundColor="white" /> */}
 
-      <View style={tw("flex flex-col w-full bg-gray-50 h-full")}>
-        <View style={tw("flex flex-col items-center")}>
-          <View style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}>
+      <View className="flex flex-col w-full bg-gray-300 h-full">
+        <View className="flex flex-col items-center">
+          <View
+            className="w-full overflow-hidden "
+            //style={[tw(""), { width: PAGE_DIM.width, overflow: "hidden" }]}
+          >
             <Animated.FlatList
               horizontal
               data={prodData?.data.images}
@@ -188,10 +192,11 @@ const ProductScreen = ({ route }) => {
                     <Image
                       source={{ uri: item }}
                       style={{
-                        height: 0.62 * PAGE_DIM.height,
+                        height: PAGE_DIM.width,
                         width: PAGE_DIM.width,
                         resizeMode: "cover",
                       }}
+                      className="h-1/2 w-1/2 object-cover"
                     />
                   </SharedElement>
                 );
@@ -199,25 +204,12 @@ const ProductScreen = ({ route }) => {
             />
           </View>
         </View>
-        <View
-          style={[
-            tw(
-              "flex flex-row justify-between mt-4 mx-4 items-center h-8 absolute top-0 "
-            ),
-            { width: 0.95 * PAGE_DIM.width },
-          ]}
-        >
-          <View
-            style={tw(
-              "flex flex-row bg-blue-500 px-2 items-center justify-center h-7  rounded-2xl"
-            )}
-          >
+        <View className="flex flex-row justify-between w-[95%] mt-4 mx-4 items-center h-8 absolute top-0 ">
+          <View className="flex flex-row bg-blue-500 px-2 items-center justify-center h-7  rounded-2xl">
             <Icon name="place" type="material" color="red" size={20} />
             <Text
-              style={[
-                styles.fontStyle,
-                tw("text-white text-center text-xs mr-1"),
-              ]}
+              style={[styles.fontStyle]}
+              className="text-white text-center text-xs mr-1"
             >
               {prodData?.data.loc.length > 7
                 ? prodData?.data.loc.slice(0, 8) + ".."
@@ -241,7 +233,14 @@ const ProductScreen = ({ route }) => {
           </TouchableOpacity>
         </View>
         <BottomSheet
-          snapPoints={[PAGE_DIM.height / 2.3, PAGE_DIM.height]}
+          snapPoints={[
+            PAGE_DIM.height -
+              PAGE_DIM.width +
+              (Platform.OS === "ios"
+                ? -0.172 * PAGE_DIM.width
+                : 0.0448 * PAGE_DIM.width),
+            PAGE_DIM.height,
+          ]}
           backgroundStyle={tw("rounded-3xl bg-gray-100")}
         >
           <BottomSheetScrollView style={tw("flex flex-col mx-8 ")}>
@@ -372,7 +371,11 @@ const ProductScreen = ({ route }) => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => newMessage(prodData?.data.user)}
+            onPress={() =>
+              user
+                ? newMessage(prodData?.data.user)
+                : navigation.navigate("Login")
+            }
             style={tw("bg-yellow-400 p-3 rounded-2xl")}
           >
             <Text style={[tw("text-base text-indigo-900"), styles.fontStyle]}>

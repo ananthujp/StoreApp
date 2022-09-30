@@ -38,12 +38,13 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDocs,
   updateDoc,
 } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/core";
 import { styles } from "./Styles";
 import useAuth from "../hooks/userAuth";
-const NewProduct = ({ route }) => {
+const NewAd = ({ route }) => {
   const userid = route.params.userid;
   const [image, setImage] = useState([]);
   const [load, setLoad] = useState(false);
@@ -90,84 +91,42 @@ const NewProduct = ({ route }) => {
     setTitle("Creating document..");
     prod_name &&
       prod_desc &&
-      prod_loc &&
-      prod_price &&
       image.length > 0 &&
-      addDoc(collection(db, "Products"), {
-        name: prod_name,
-        desc: prod_desc,
-        loc: prod_loc,
-        price: prod_price,
+      addDoc(collection(db, "Stories"), {
+        dt: prod_desc,
+        txt: prod_name,
         user: userid,
-        used: user.store ? false : true,
       }).then((dic) => {
         setValue(25);
         setTitle("Uploading Images..");
-        //uploadFile(dic.id, image.length - 1, image.length);
-        //image.map((img, i) => uploadFile(dic.id, img, i));
         setProdId(dic.id);
         Promise.all(
-          image.map(
-            (im, i) =>
-              fetch(im.uri).then((dc) => {
-                dc.blob().then((blob) =>
-                  uploadBytes(
-                    ref(storage, `products/${dic.id}/images${i}.jpg`),
-                    blob,
-                    {
-                      contentType: "image/jpeg",
-                    }
-                  ).then((dc) => {
-                    getDownloadURL(
-                      ref(storage, `products/${dic.id}/images${i}.jpg`)
-                    ).then((downloadURL) => {
-                      //console.log(i, downloadURL);
-                      updateDoc(
-                        doc(db, "Products", dic.id),
-                        { images: arrayUnion(downloadURL) },
-                        { merge: true }
-                      ).finally(() => setValue2(i));
-                    });
-                  })
-                );
-              })
-            //.finally(() => console.log(`Final.Done${i}`))
+          image.map((im, i) =>
+            fetch(im.uri).then((dc) => {
+              dc.blob().then((blob) =>
+                uploadBytes(
+                  ref(storage, `Ads/${dic.id}/images${i}.jpg`),
+                  blob,
+                  {
+                    contentType: "image/jpeg",
+                  }
+                ).then((dc) => {
+                  getDownloadURL(
+                    ref(storage, `Ads/${dic.id}/images${i}.jpg`)
+                  ).then((downloadURL) => {
+                    updateDoc(
+                      doc(db, "Stories", dic.id),
+                      { img: downloadURL },
+                      { merge: true }
+                    ).finally(() => setValue2(i));
+                  });
+                })
+              );
+            })
           )
         );
       });
   };
-  // const uploadFile = async (id, im, i) => {
-  //   //setTitle(`Uploading Images..`);
-  //   //console.log("stage 1");
-  //   //setTitle(`Uploading Image ${n - i}..`);
-  //   //const response = await fetch(image[i].uri);
-  //   //const blob = await response.blob();
-  //   fetch(im.uri)
-  //     .then((dc) => {
-  //       dc.blob().then((blob) => {
-  //         const metadata = {
-  //           contentType: "image/jpeg",
-  //         };
-  //         uploadBytesResumable(
-  //           ref(storage, `products/${id}/images${i}.jpg`),
-  //           blob,
-  //           metadata
-  //         ).then((dc) => {
-  //           getDownloadURL(ref(storage, `products/${id}/images${i}.jpg`)).then(
-  //             (downloadURL) => {
-  //               console.log(i, downloadURL);
-  //               updateDoc(
-  //                 doc(db, "Products", id),
-  //                 { images: arrayUnion(downloadURL) },
-  //                 { merge: true }
-  //               );
-  //             }
-  //           );
-  //         });
-  //       });
-  //     })
-  //     .then(() => console.log(`Done${i}`));
-  // };
 
   const pickImage = async () => {
     ImagePicker.launchImageLibraryAsync({
@@ -178,7 +137,7 @@ const NewProduct = ({ route }) => {
     }).then(
       (result) =>
         !result.cancelled &&
-        manipulateAsync(result.uri, [{ resize: { height: 900, width: 900 } }], {
+        manipulateAsync(result.uri, [{ resize: { height: 300, width: 300 } }], {
           compress: 1,
         }).then((dc) =>
           setImage([...image, { id: image.length, uri: dc.uri, prog: 0 }])
@@ -230,7 +189,7 @@ const NewProduct = ({ route }) => {
                 <Text
                   style={[tw("text-white text-base"), styles.fontStyleXlite]}
                 >
-                  New Product
+                  New Ad
                 </Text>
               </View>
             </View>
@@ -302,7 +261,7 @@ const NewProduct = ({ route }) => {
               </TouchableOpacity>
             </View>
           ))}
-          {image?.length < 4 && (
+          {image?.length < 2 && (
             <TouchableOpacity
               style={tw(
                 "w-20 h-20 mx-2 border border-indigo-100 flex items-center justify-center"
@@ -319,39 +278,7 @@ const NewProduct = ({ route }) => {
             </TouchableOpacity>
           )}
         </View>
-        <View className="fle flex-row items-center py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200">
-          <Icon
-            name="place"
-            type="material"
-            color={"gray"}
-            style={tw(" text-gray-400 mr-2")}
-            size={20}
-          />
-          <TextInput
-            value={prod_loc}
-            onChangeText={(value) => setProdLoc(value)}
-            underlineColorAndroid="transparent"
-            placeholder="Location {example : Hiqom Hostel}"
-            className="w-full"
-          />
-        </View>
-        <View className="fle flex-row items-center py-2 px-4 mx-2 mt-4 mb-1 border rounded-md border-gray-300 bg-gray-200">
-          <Icon
-            name="money"
-            type="material"
-            color={"gray"}
-            style={tw(" text-gray-400 mr-2")}
-            size={20}
-          />
-          <TextInput
-            value={prod_price}
-            onChangeText={(value) => setProdPrice(value)}
-            underlineColorAndroid="transparent"
-            keyboardType="numeric"
-            placeholder="Expected Price (in rupees)"
-            className="w-full"
-          />
-        </View>
+
         <TouchableOpacity
           onPress={createProduct}
           style={[
@@ -390,17 +317,31 @@ const NewProduct = ({ route }) => {
         <Icon name="checkcircle" type="antdesign" color="white" size={120} />
         <Text style={tw("text-3xl font-bold text-white mt-6")}>Done</Text>
         <Text style={tw("text-xs font-bold text-white mt-6")}>
-          Your product is added successfully.
+          Your advertisement is added successfully.
         </Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate("ProductScreen", { data: prodID })}
+          onPress={() => {
+            getDocs(collection(db, "Stories")).then((dc) =>
+              navigation.navigate("StoryScreen", {
+                item: parseInt(dc.docs.map.length) - 1,
+                items: dc.docs.map((dic, i) => ({
+                  dt: dic.data().dt,
+                  title: dic.data().title,
+                  id: i,
+                  img: dic.data().img,
+                  txt: dic.data().txt,
+                  user: dic.data().user,
+                })),
+              })
+            );
+          }}
         >
           <Text
             style={tw(
               "text-xs font-bold text-indigo-600 mt-6 px-3 py-2 bg-white rounded-full"
             )}
           >
-            View product
+            View Ad
           </Text>
         </TouchableOpacity>
       </View>
@@ -408,4 +349,4 @@ const NewProduct = ({ route }) => {
   );
 };
 
-export default NewProduct;
+export default NewAd;

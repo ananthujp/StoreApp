@@ -4,29 +4,39 @@ import tw from "tailwind-rn";
 import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/core";
 import useAuth from "../hooks/userAuth";
-const Actions = () => {
+const Actions = ({ ad }) => {
   const navigation = useNavigation();
   const { user } = useAuth();
   return (
     <View>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("NewProduct", {
-            userid: user.id,
-          });
-        }}
-        className="flex flex-col w-20 h-20 items-center bg-gray-300 p-4 rounded-full"
+        onPress={
+          ad
+            ? () => {
+                navigation.navigate("NewAd", {
+                  userid: user.store,
+                });
+              }
+            : () => {
+                navigation.navigate("NewProduct", {
+                  userid: user.id,
+                });
+              }
+        }
+        className={
+          "flex  p-5  items-center  mx-2 my-auto rounded-full " +
+          (ad ? "bg-orange-200" : "bg-indigo-200")
+        }
       >
         <Icon
           name="plus"
           type="antdesign"
           color={"gray"}
-          style={tw(" text-gray-400 mr-2")}
-          size={20}
+          className=" text-gray-400 mx-auto "
+          size={35}
         />
-        <Text>Sell</Text>
       </TouchableOpacity>
-      <Text>Used product</Text>
+      <Text className="mx-auto">{ad ? "New Ad" : "New item"}</Text>
     </View>
   );
 };

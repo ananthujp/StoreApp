@@ -1,5 +1,12 @@
-import { View, Text, SafeAreaView, StatusBar } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { enableScreens } from "react-native-screens";
 import HomeScreen from "./screens/HomeScreen";
@@ -13,6 +20,8 @@ import StoreScreen from "./screens/StoreScreen";
 import MessageScreen from "./screens/MessageScreen";
 import NewProduct from "./screens/NewProduct";
 import Settings from "./screens/Settings";
+import NewAd from "./screens/NewAd";
+import SettingsProfile from "./screens/SettingsProfile";
 
 const Stack = createSharedElementStackNavigator();
 enableScreens();
@@ -28,8 +37,10 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
     </SafeAreaView>
   </View>
 );
+
 const StackNavigator = () => {
   const { user, statusBar } = useAuth();
+
   return (
     //    <NavigationContainer independent={true}>
     <>
@@ -42,6 +53,7 @@ const StackNavigator = () => {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="SettingsProfile" component={SettingsProfile} />
           <Stack.Screen
             name="ProductScreen"
             component={ProductScreen}
@@ -58,6 +70,7 @@ const StackNavigator = () => {
           />
           <Stack.Screen name="StoreScreen" component={StoreScreen} />
           <Stack.Screen name="NewProduct" component={NewProduct} />
+          <Stack.Screen name="NewAd" component={NewAd} />
           <Stack.Screen name="MessageScreen" component={MessageScreen} />
         </>
       </Stack.Navigator>

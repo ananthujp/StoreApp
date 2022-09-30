@@ -37,7 +37,7 @@ const Profile = () => {
 
   const Tabs = [
     { name: "Messages", icon: "inbox", command: "message" },
-    { name: "Ads", icon: "camera", command: "ads" },
+    { name: "Products", icon: "camera", command: "ads" },
     { name: "Wish list", icon: "smile", command: "wishlist" },
   ];
   const Orders = {
@@ -133,7 +133,7 @@ const Profile = () => {
             >
               <Animated.View
                 key={`bdc1.${i}.element`}
-                className="flex mx-1 h-12  rounded-full"
+                className="flex mx-1 h-12 my-auto rounded-full"
                 style={[{ width: scale }, { backgroundColor: bgColor }]}
               >
                 <Counter icon={dc.icon} text={dc.name} />
