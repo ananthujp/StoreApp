@@ -23,8 +23,9 @@ import {
 import { db } from "../firebase";
 import useAuth from "../hooks/userAuth";
 import { useNavigation } from "@react-navigation/core";
+import { async } from "@firebase/util";
 const ListItem = ({ item, index }) => {
-  const { user } = useAuth();
+  const { user, pushNotif } = useAuth();
   const [userD, setUser] = useState();
   const [unread, setUnread] = useState(false);
   const navigation = useNavigation();
@@ -32,20 +33,28 @@ const ListItem = ({ item, index }) => {
     getDoc(doc(db, "Profiles", item.id)).then((dc) =>
       setUser({ name: dc.data().name, dp: dc.data().dp })
     );
+    onSnapshot(
+      query(
+        collection(db, "Profiles", user.id, "Messages", item.id, "messages"),
+        orderBy("time", "desc"),
+        limit(1)
+      ),
+      (dc) =>
+        dc.docs.map(async (dic) => {
+          setMsg(dic.data().data);
+          setUnread(!dic.data().read);
+          !dic.data().read &&
+            userD &&
+            (await pushNotif({
+              id: dic.id,
+              title: `You have an unread message from ${userD.name}`,
+              body: dic.data().data,
+            }));
+        })
+    );
   }, []);
   const [msg, setMsg] = useState();
-  onSnapshot(
-    query(
-      collection(db, "Profiles", user.id, "Messages", item.id, "messages"),
-      orderBy("time", "desc"),
-      limit(1)
-    ),
-    (dc) =>
-      dc.docs.map((dic) => {
-        setMsg(dic.data().data);
-        setUnread(!dic.data().read);
-      })
-  );
+
   return (
     <TouchableOpacity
       onPress={() => {

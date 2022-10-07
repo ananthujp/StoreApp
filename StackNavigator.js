@@ -22,6 +22,7 @@ import NewProduct from "./screens/NewProduct";
 import Settings from "./screens/Settings";
 import NewAd from "./screens/NewAd";
 import SettingsProfile from "./screens/SettingsProfile";
+import NotifApp from "./screens/Notif";
 
 const Stack = createSharedElementStackNavigator();
 enableScreens();
@@ -59,15 +60,8 @@ const StackNavigator = () => {
             component={ProductScreen}
             options={({ route }) => ({ title: route.params.name })}
           />
-          <Stack.Screen
-            name="StoryScreen"
-            component={StoryScreen}
-            // options={({ route }) => ({
-            //   image: route.params.image,
-            //   text: route.params.text,
-            //   id: route.params.id,
-            // })}
-          />
+
+          <Stack.Screen name="StoryScreen" component={StoryScreen} />
           <Stack.Screen name="StoreScreen" component={StoreScreen} />
           <Stack.Screen name="NewProduct" component={NewProduct} />
           <Stack.Screen name="NewAd" component={NewAd} />

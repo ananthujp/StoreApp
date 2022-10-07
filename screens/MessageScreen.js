@@ -28,20 +28,20 @@ import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native";
+import postFunc from "../Backend";
 const Product = ({ proID, left }) => {
   const [proDATA, setProData] = useState();
   const navigation = useNavigation();
-  useEffect(
-    () =>
-      getDoc(doc(db, "Products", proID)).then((dc) =>
-        setProData({
-          img: dc.data().images[0],
-          name: dc.data().name,
-          desc: dc.data().desc,
-        })
-      ),
-    []
-  );
+  useEffect(() => {
+    getDoc(doc(db, "Products", proID)).then((dc) =>
+      setProData({
+        img: dc.data()?.images[0],
+        name: dc.data()?.name,
+        desc: dc.data()?.desc,
+      })
+    );
+    return setProData(null);
+  }, []);
   return proDATA ? (
     <TouchableOpacity
       onPress={() => navigation.push("ProductScreen", { data: proID })}
@@ -105,7 +105,7 @@ const MessageScreen = ({ route }) => {
           collection(db, "Profiles", userid, "Messages", thread, "messages"),
           {
             data: msg,
-            read: false,
+            read: true,
             time: serverTimestamp(),
             from: "me",
             product: prodID,
@@ -120,7 +120,9 @@ const MessageScreen = ({ route }) => {
               from: "you",
               product: prodID,
             }
-          ).then(() => {
+          ).then((dcRef) => {
+            //postFunc(thread, userid, dcRef.id);
+            postFunc(thread, userid, dcRef.id);
             setMsg(null);
             setProdID(null);
             messageRef.current.scrollToEnd({ animated: true });
@@ -145,8 +147,9 @@ const MessageScreen = ({ route }) => {
               time: serverTimestamp(),
               from: "you",
             }
-          ).then(() => {
+          ).then((dcRef) => {
             setMsg(null);
+            postFunc(thread, userid, dcRef.id);
             messageRef.current.scrollToEnd({ animated: true });
             setLoad(false);
           })

@@ -16,6 +16,9 @@ import {
   signOut,
 } from "@firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { useRef } from "react";
 
 const AuthContext = createContext({});
 const config = {
@@ -27,6 +30,57 @@ const config = {
   permissions: ["public_profile", "email", "gender", "location"],
 };
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function schedulePushNotification(notifData) {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: notifData.title,
+      body: notifData.body,
+      data: { data: "goes here" },
+    },
+    trigger: { seconds: 2 },
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
 export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -35,9 +89,9 @@ export const AuthProvider = ({ children }) => {
     content: "light-content",
   });
   const [heightAvatar, setHavatar] = useState(0);
-  const [loadingInitial, setLoadingInitial] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const profID = "7BKEh2pdbk4GBfnE5hFx";
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [notifIDs, setNoifIDs] = useState([]);
   useEffect(() => {
     storage
       .load({
@@ -61,7 +115,23 @@ export const AuthProvider = ({ children }) => {
             break;
         }
       });
+    async function fetchData() {
+      registerForPushNotificationsAsync();
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener();
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener();
+    }
+    fetchData();
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
+
   useEffect(() => {
     user &&
       storage.save({
@@ -70,6 +140,12 @@ export const AuthProvider = ({ children }) => {
         expires: null,
       });
   }, [user]);
+
+  const pushNotif = async (notifData) => {
+    !notifIDs.includes(notifData.id) &&
+      schedulePushNotification(notifData) &&
+      setNoifIDs((arr) => [...arr, notifData.id]);
+  };
   const memoedValue = useMemo(
     () => ({
       user,
@@ -78,6 +154,8 @@ export const AuthProvider = ({ children }) => {
       setHavatar,
       statusBar,
       setStatusBar,
+      pushNotif,
+      setNoifIDs,
     }),
     [user, heightAvatar, statusBar]
   );

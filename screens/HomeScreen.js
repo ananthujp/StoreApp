@@ -32,6 +32,7 @@ import Actions from "./Actions";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { NOTIFICATIONS } from "expo-permissions";
+import postFunc from "../Backend";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View style={[{ backgroundColor }]}>
     <SafeAreaView style={{ marginTop: Platform.OS === "ios" ? -44 : 0 }}>
@@ -97,23 +98,6 @@ const Update = ({ currentVersion }) => {
   );
 };
 const HomeScreen = () => {
-  useEffect(async () => {
-    await NOTIFICATIONS.setNotificationChannelAsync("new-emails", {
-      name: "E-mail notifications",
-      //sound: 'mySoundFile.wav', // Provide ONLY the base filename
-    });
-
-    await NOTIFICATIONS.scheduleNotificationAsync({
-      content: {
-        title: "You've got mail! 📬",
-        //sound: 'mySoundFile.wav', // Provide ONLY the base filename
-      },
-      trigger: {
-        seconds: 2,
-        // channelId: 'new-emails',
-      },
-    });
-  }, []);
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 80,
     overshootClamping: true,
@@ -174,8 +158,8 @@ const HomeScreen = () => {
           children={() => {
             return (
               <BottomSheetScrollView showsVerticalScrollIndicator={false}>
-                {/* <Actions /> */}
                 <Stories />
+
                 <Stores />
                 <Products />
               </BottomSheetScrollView>
