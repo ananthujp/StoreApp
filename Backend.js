@@ -4,7 +4,7 @@ const postFunc = async (profID, threadID, msgID) => {
   axios({
     method: "get",
     url:
-      "http://192.168.1.4:3000/user?prof=" +
+      "https://greenclubstore2.herokuapp.com/user?prof=" +
       profID +
       "&thread=" +
       threadID +

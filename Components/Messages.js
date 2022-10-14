@@ -106,6 +106,12 @@ function Messages() {
       width={PAGE_DIM.width}
     >
       <View
+        className={
+          "w-full h-[95%] bg-white/60 rounded-3xl z-50" +
+          (search ? " absolute" : " hidden")
+        }
+      ></View>
+      <View
         style={tw(
           " flex flex-col items-center z-50  rounded-lg" +
             (search ? " absolute" : " hidden")
@@ -116,13 +122,18 @@ function Messages() {
             "bg-indigo-100 rounded-full items-center flex flex-row border border-indigo-400"
           )}
         >
+          <Icon
+            name="user"
+            type="antdesign"
+            color={"gray"}
+            style={tw(" text-gray-400 pl-2")}
+            size={20}
+          />
           <TextInput
             placeholder="Search for users..."
             onChangeText={(value) => setSearch(value)}
-            style={[
-              tw("text-lg px-5 mx-4 py-2 "),
-              { width: 0.75 * PAGE_DIM.width },
-            ]}
+            className="text-sm font-semibold  px-1 py-2 "
+            style={[{ width: 0.75 * PAGE_DIM.width }]}
           />
           <TouchableOpacity
             onPress={() => setSearch(false)}

@@ -1,6 +1,6 @@
-import { Text, View, TouchableOpacity, Animated } from "react-native";
+import { Text, View, TouchableOpacity, Animated, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar, Image } from "react-native-elements";
+import { Avatar, Icon, Image } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 import tw from "tailwind-rn";
 import { useNavigation } from "@react-navigation/core";
@@ -73,9 +73,30 @@ const Stories = () => {
           </View>
         </SharedElement>
       </View>
-      <TouchableOpacity onPress={() => deleteItem(item.idd)}>
-        <Text style={tw("text-center mt-1")}>{item.txt}</Text>
-      </TouchableOpacity>
+
+      <Text style={tw("text-center mt-1")}>{item.txt}</Text>
+      {user && item.user === user.store && (
+        <TouchableOpacity
+          className="absolute top-16 left-14 bg-white rounded-full border border-indigo-400 active:bg-indigo-600 active:text-whtie"
+          onPress={() =>
+            Alert.alert("Delete Story", "Do you want to delete this story?", [
+              {
+                text: "Cancel",
+                //onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "OK", onPress: () => deleteItem(item.idd) },
+            ])
+          }
+        >
+          <Icon
+            name="delete-outline"
+            type="material"
+            color="#4338ca"
+            size={16}
+          />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
   return (

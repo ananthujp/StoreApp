@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Store",
+    "name": "Green Store",
     "slug": "Store",
     "version": "1.0.0",
     "plugins": [
@@ -13,7 +13,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./local/assets/notification-icon.png",
+          "icon": "./local/assets/icon.png",
           "color": "#ffffff",
           "sounds": [
             "./local/assets/notification-sound.wav",

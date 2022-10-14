@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import { ref, deleteObject, listAll } from "firebase/storage";
 import { Icon } from "react-native-elements/dist/icons/Icon";
@@ -66,7 +67,20 @@ const ListItemAds = ({ item, logo, category, index, id }) => {
         </View>
         <View style={tw("flex flex-col items-center justify-around mx-2")}>
           <TouchableOpacity
-            onPress={deleteItem}
+            onPress={() =>
+              Alert.alert(
+                "Delete Product",
+                "Do you want to remove this product from Green Store?",
+                [
+                  {
+                    text: "Cancel",
+                    //onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "OK", onPress: () => deleteItem() },
+                ]
+              )
+            }
             style={tw(
               "rounded-full w-8 h-8 opacity-75 flex items-center justify-center"
             )}

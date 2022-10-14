@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -261,7 +262,20 @@ const Login = () => {
             {loading && <Progress.CircleSnail size={20} color={["red"]} />}
           </TouchableOpacity>
           <View style={tw(" flex flex-row my-3")}>
-            <TouchableOpacity onPress={() => setScreen(false)} style={tw("")}>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.canOpenURL(
+                  "https://students.iitgn.ac.in/greenclub/store/register/"
+                ).then(
+                  (dc) =>
+                    dc &&
+                    Linking.openURL(
+                      "https://students.iitgn.ac.in/greenclub/store/register/"
+                    )
+                )
+              }
+              style={tw("")}
+            >
               <Text style={tw("text-indigo-600 font-bold")}>Sign UP</Text>
             </TouchableOpacity>
             <Text style={tw("ml-1 text-center")}>

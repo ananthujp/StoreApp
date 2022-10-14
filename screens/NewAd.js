@@ -137,7 +137,7 @@ const NewAd = ({ route }) => {
     }).then(
       (result) =>
         !result.cancelled &&
-        manipulateAsync(result.uri, [{ resize: { height: 300, width: 300 } }], {
+        manipulateAsync(result.uri, [{ resize: { height: 800, width: 800 } }], {
           compress: 1,
         }).then((dc) =>
           setImage([...image, { id: image.length, uri: dc.uri, prog: 0 }])
@@ -261,7 +261,7 @@ const NewAd = ({ route }) => {
               </TouchableOpacity>
             </View>
           ))}
-          {image?.length < 2 && (
+          {image?.length < 1 && (
             <TouchableOpacity
               style={tw(
                 "w-20 h-20 mx-2 border border-indigo-100 flex items-center justify-center"

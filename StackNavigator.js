@@ -23,6 +23,7 @@ import Settings from "./screens/Settings";
 import NewAd from "./screens/NewAd";
 import SettingsProfile from "./screens/SettingsProfile";
 import NotifApp from "./screens/Notif";
+import About from "./screens/About";
 
 const Stack = createSharedElementStackNavigator();
 enableScreens();
@@ -66,6 +67,7 @@ const StackNavigator = () => {
           <Stack.Screen name="NewProduct" component={NewProduct} />
           <Stack.Screen name="NewAd" component={NewAd} />
           <Stack.Screen name="MessageScreen" component={MessageScreen} />
+          <Stack.Screen name="AboutScreen" component={About} />
         </>
       </Stack.Navigator>
     </>

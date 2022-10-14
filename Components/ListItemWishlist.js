@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { Icon } from "react-native-elements/dist/icons/Icon";
@@ -60,7 +61,9 @@ const ListItemWishlist = ({ item, index, category, listID }) => {
                 tw(" text-center text-gray-200 text-lg"),
               ]}
             >
-              {product?.name}
+              {product?.name.length > 16
+                ? product?.name.slice(0, 15) + "..."
+                : product?.name}
             </Text>
             {category?.map((dc, i) => (
               <Text
@@ -79,7 +82,20 @@ const ListItemWishlist = ({ item, index, category, listID }) => {
         </View>
         <View style={tw("flex flex-col items-center justify-around mx-2")}>
           <TouchableOpacity
-            onPress={() => handleDelete(listID)}
+            onPress={() =>
+              Alert.alert(
+                "Remove from wish list",
+                "Do you want to remove this from your wish list?",
+                [
+                  {
+                    text: "Cancel",
+                    //onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "OK", onPress: () => handleDelete(listID) },
+                ]
+              )
+            }
             style={tw("rounded-full w-9 h-9 flex items-start justify-start")}
           >
             <Icon name={"delete"} type="antdesign" color={"white"} size={24} />

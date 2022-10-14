@@ -51,12 +51,17 @@ const SettingsProfile = () => {
         color: "#4338ca",
         content: "light-content",
       });
+    return () =>
+      setStatusBar({
+        color: "#f3f4f6",
+        content: "dark-content",
+      });
   }, [isFocused]);
   return (
     <View className="h-full flex items-center">
       <View className="flex flex-row items-center justify-around w-full h-1/5 bg-indigo-700">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="back" type="antdesign" color="white" size={28} />
+          <Icon name="arrowleft" type="antdesign" color="white" size={28} />
         </TouchableOpacity>
         <View style={tailwind("flex flex-row items-center justify-center")}>
           <Icon name="user" type="antdesign" color="white" size={40} />
