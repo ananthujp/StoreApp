@@ -82,20 +82,9 @@ const ListItemWishlist = ({ item, index, category, listID }) => {
         </View>
         <View style={tw("flex flex-col items-center justify-around mx-2")}>
           <TouchableOpacity
-            onPress={() =>
-              Alert.alert(
-                "Remove from wish list",
-                "Do you want to remove this from your wish list?",
-                [
-                  {
-                    text: "Cancel",
-                    //onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  { text: "OK", onPress: () => handleDelete(listID) },
-                ]
-              )
-            }
+            onPress={() => {
+              handleDelete(listID);
+            }}
             style={tw("rounded-full w-9 h-9 flex items-start justify-start")}
           >
             <Icon name={"delete"} type="antdesign" color={"white"} size={24} />

@@ -22,7 +22,7 @@ const ProductCard = ({ data, i }) => {
     <Animatable.View
       animation="zoomInDown"
       delay={i * 100}
-      className="flex flex-col ios:w-[47.5%] justify-between bg-white rounded-xl border border-gray-300 pb-4 drop-shadow-md mx-1 my-2 relative overflow-hidden"
+      className="flex flex-col ios:w-[47.5%] w-[47.5%] justify-between bg-white rounded-xl border border-gray-300 pb-4 drop-shadow-md mx-1 my-2 relative overflow-hidden"
 
       // styles.shadow,
       // { width: Width, height: 1.4 * Width },

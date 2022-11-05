@@ -218,7 +218,9 @@ const ProductScreen = ({ route }) => {
           </View>
           <Backdrop scrollX={scrollX} />
           <TouchableOpacity
-            onPress={addToWishlist}
+            onPress={() =>
+              user ? addToWishlist() : navigation.navigate("Login")
+            }
             style={tw(
               "flex flex-col items-center px-1 pt-2.5 h-10 w-10 rounded-full" +
                 (wish.flag ? " bg-white" : " bg-red-600")
@@ -271,28 +273,55 @@ const ProductScreen = ({ route }) => {
                 }}
               >
                 <View
-                  style={[
-                    tw("mx-8 bg-white border border-yellow-400 rounded-lg"),
-                    { marginTop: 0.45 * PAGE_DIM.height },
-                  ]}
+                  className="absolute flex flex-col justify-between ml-[1%] w-[98%] bottom-1 h-[40%] bg-white border shadow-lg border-yellow-400 rounded-2xl"
+                  style={[{ marginTop: 0.45 * PAGE_DIM.height }]}
                 >
+                  <View className="flex flex-row items-center justify-between mt-2 mx-2">
+                    <View></View>
+                    <View></View>
+                    <TouchableOpacity
+                      onPress={() => setModalVisible(!modalVisible)}
+                    >
+                      <Icon
+                        name="close"
+                        type="material"
+                        color={"rgb(234, 179, 8)"}
+                        size={24}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Icon
+                    name="stars"
+                    type="material"
+                    color={"rgb(234, 179, 8)"}
+                    size={100}
+                  />
+                  <View>
+                    <Text className="text-xl text-yellow-500 mt-4 mx-auto font-bold">
+                      Rate this product
+                    </Text>
+                  </View>
                   <Rating
                     showRating
                     type="star"
                     imageSize={25}
                     onFinishRating={(e) => setRating(e)}
-                    style={{ paddingVertical: 10 }}
+                    style={{ paddingVertical: 10, color: "blue" }}
                   />
-                  <Button
-                    onPress={() => handleRating()}
-                    title="OK"
-                    color="#FEC260"
-                    accessibilityLabel="Learn more about this purple button"
-                  />
+                  <View className="mb-4 w-4/5 mx-auto">
+                    <Button
+                      onPress={() => handleRating()}
+                      title="OK"
+                      color="#FEC260"
+                      accessibilityLabel="Learn more about this purple button"
+                    />
+                  </View>
                 </View>
               </Modal>
               <TouchableOpacity
-                onPress={() => setModalVisible(true)}
+                onPress={() =>
+                  user ? setModalVisible(true) : navigation.navigate("Login")
+                }
                 style={tw("flex flex-col items-end")}
               >
                 <View style={tw("flex flex-row")}>

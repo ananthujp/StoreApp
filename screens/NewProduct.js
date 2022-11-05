@@ -45,18 +45,19 @@ import { styles } from "./Styles";
 import useAuth from "../hooks/userAuth";
 const NewProduct = ({ route }) => {
   const userid = route.params.userid;
+  const { user, setStatusBar, defSettings } = useAuth();
   const [image, setImage] = useState([]);
   const [load, setLoad] = useState(false);
   const [prod_name, setProdName] = useState();
   const [prod_desc, setProdDesc] = useState();
-  const [prod_loc, setProdLoc] = useState("");
+  const [prod_loc, setProdLoc] = useState(defSettings.location);
   const [prod_price, setProdPrice] = useState();
   const [comp, setComp] = useState(false);
   const [value, setValue] = useState(0);
   const [prodID, setProdId] = useState(0);
   const [value2, setValue2] = useState();
   const [title, setTitle] = useState("");
-  const { user, setStatusBar } = useAuth();
+
   const navigation = useNavigation();
   useEffect(() => {
     setStatusBar({

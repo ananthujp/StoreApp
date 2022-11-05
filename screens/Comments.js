@@ -13,6 +13,7 @@ import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import * as Progress from "react-native-progress";
 import useAuth from "../hooks/userAuth";
+import { useNavigation } from "@react-navigation/core";
 const DATA = [
   {
     id: 0,
@@ -50,6 +51,7 @@ const Comments = ({ ProdID }) => {
       setComments(dc.docs.map((dic) => ({ id: dic.id, data: dic.data() })))
     );
   }, []);
+  const navigation = useNavigation();
   return (
     <View>
       <View className="mt-4">
@@ -65,7 +67,9 @@ const Comments = ({ ProdID }) => {
         />
 
         <TouchableOpacity
-          onPress={handleComment}
+          onPress={() =>
+            user ? handleComment() : navigation.navigate("Login")
+          }
           className="bg-indigo-300 h-9 w-9 -ml-11 rounded-lg items-center"
         >
           {load ? (

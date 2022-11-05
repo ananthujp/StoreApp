@@ -11,7 +11,7 @@ import {
 import * as Progress from "react-native-progress";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { TextInput } from "react-native";
+import { Image, TextInput } from "react-native";
 import {
   Dimensions,
   ScrollView,
@@ -19,11 +19,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Avatar, Icon, SearchBar } from "react-native-elements";
 import tw from "tailwind-rn";
 import { db } from "../firebase";
 import useAuth from "../hooks/userAuth";
-import ListItem from "../screens/ListItem";
+import ListItemw from "../screens/ListItem";
 
 function Messages() {
   const navigation = useNavigation();
@@ -34,6 +34,7 @@ function Messages() {
   const [results, setResults] = useState();
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+
   useEffect(() => {
     user &&
       onSnapshot(collection(db, "Profiles", user.id, "Messages"), (dc) => {
@@ -41,7 +42,7 @@ function Messages() {
           dc.docs.map((dic) => ({
             id: dic.id,
             name: dic.data().name,
-            icon: dic.data().icon,
+            dp: dic.data().dp,
             //messages: dic.data().messages,
           }))
         );
@@ -113,11 +114,11 @@ function Messages() {
       ></View>
       <View
         style={tw(
-          " flex flex-col items-center z-50  rounded-lg" +
+          " flex flex-col items-center z-50 w-full overflow-hidden rounded-lg" +
             (search ? " absolute" : " hidden")
         )}
       >
-        <View
+        {/* <View
           style={tw(
             "bg-indigo-100 rounded-full items-center flex flex-row border border-indigo-400"
           )}
@@ -147,13 +148,16 @@ function Messages() {
               size={20}
             />
           </TouchableOpacity>
+        </View> */}
+        <View className="w-full">
+          <SearchBar
+            lightTheme="true"
+            placeholder="Type Here..."
+            onChangeText={(value) => setSearch(value)}
+            value={search}
+          />
         </View>
-        <View
-          style={[
-            tw(" bg-indigo-50 rounded-b-xl"),
-            { width: 0.75 * PAGE_DIM.width },
-          ]}
-        >
+        <View style={[tw(" bg-indigo-50 rounded-b-xl w-full")]}>
           {results?.map(
             (dc) =>
               dc.length > 0 &&
@@ -165,9 +169,16 @@ function Messages() {
                       onPress={() => {
                         newMessage(dic.id);
                       }}
-                      style={tw(" p-2 border-b border-indigo-200")}
+                      className="flex flex-row items-center py-2 pl-4 border-b border-indigo-200"
                     >
-                      <Text>{dic.name}</Text>
+                      <Avatar
+                        rounded
+                        size={26}
+                        source={{
+                          uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+                        }}
+                      />
+                      <Text className="ml-2 font-semibold">{dic.name}</Text>
                     </TouchableOpacity>
                   )
               )
@@ -175,7 +186,7 @@ function Messages() {
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => setSearch(true)}
+        onPress={() => (user ? setSearch(true) : navigation.navigate("Login"))}
         style={tw(
           "flex flex-row items-center my-3 bg-indigo-500 flex items-center px-4 py-1 rounded-md "
         )}
@@ -189,22 +200,22 @@ function Messages() {
         />
         <Text style={tw("ml-2 mr-2 text-white text-center")}>New Message</Text>
       </TouchableOpacity>
-      {loading ? (
-        <Progress.CircleSnail
-          size={100}
-          thickness={1}
-          color={["red", "white"]}
-        />
-      ) : (
-        user &&
-        threads && (
-          <ScrollView style={tw("flex w-full")}>
-            {threads.map((doc, i) => (
-              <ListItem key={`thread.${doc.id}`} item={doc} index={i} />
-            ))}
-          </ScrollView>
-        )
-      )}
+      {loading
+        ? user && (
+            <Progress.CircleSnail
+              size={100}
+              thickness={1}
+              color={["red", "white"]}
+            />
+          )
+        : user &&
+          threads && (
+            <ScrollView style={tw("flex w-full")}>
+              {threads.map((doc, i) => (
+                <ListItemw key={`thread.${doc.id}`} item={doc} index={i} />
+              ))}
+            </ScrollView>
+          )}
     </View>
   );
 }

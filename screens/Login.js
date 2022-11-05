@@ -8,12 +8,11 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import * as Google from "expo-google-app-auth";
 import tw from "tailwind-rn";
 import * as Progress from "react-native-progress";
 import useAuth from "../hooks/userAuth";
 import { Image } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, Input } from "react-native-elements";
 import { auth, db } from "../firebase";
 import { GoogleAuthProvider, signInWithCredential } from "@firebase/auth";
 import {
@@ -24,12 +23,12 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useNavigation } from "@react-navigation/core";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
 import logo from "../Images/login.png";
 const Login = () => {
   //const { signInWithGoogle } = useAuth();
   const navigation = useNavigation();
-  const { setUser } = useAuth();
+  const { setUser, setStatusBar } = useAuth();
   const [loginscreen, setScreen] = useState(true);
   const [loading, setloading] = useState(false);
   const [emailState, seteState] = useState(0);
@@ -46,6 +45,14 @@ const Login = () => {
     setStatus(null);
     setloading(false);
   }, [loginscreen]);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    isFocused &&
+      setStatusBar({
+        color: "#4338ca",
+        content: "light-content",
+      });
+  }, [isFocused]);
   const emailCheck = (email) => {
     email && email.split("@")[1] && email.split("@")[1].split(".")[1]
       ? seteState(2)
@@ -199,56 +206,39 @@ const Login = () => {
             {loginState === 3 &&
               "Signed UP successfully : Please login to your account"}
           </Text>
-          <View
-            style={tw(
-              "flex flex-row mt-6 w-4/5 px-2 py-1 rounded-xl border justify-between items-center" +
-                (usernameState === 1 ? " border-red-400" : " border-gray-400")
-            )}
-          >
-            <View style={tw("flex flex-row justify-start items-center")}>
-              <Icon
-                name="user"
-                type="antdesign"
-                color={usernameState === 1 ? "#dc2626" : "black"}
-                style={tw(" text-gray-400 mr-2")}
-                size={20}
-              />
-              <TextInput
-                onChangeText={(value) => setUsername(value)}
-                placeholder="Enter your username"
-                keyboardType="default"
-                value={username}
-                editable={status === 1 ? false : true}
-                style={tw(
-                  usernameState === 1 ? " text-red-400" : " text-black"
-                )}
-                className="w-full"
-              />
-            </View>
-          </View>
 
-          <View
-            style={tw(
-              "flex flex-row my-3 w-4/5 px-2 py-1 rounded-xl border border-gray-400  justify-between items-center"
-            )}
-          >
-            <View style={tw("flex flex-row justify-start items-center")}>
-              <Icon
-                name="lock"
-                type="antdesign"
-                style={tw(" text-gray-400 mr-2")}
-                size={20}
-              />
-              <TextInput
-                onChangeText={(value) => setPass({ ...password, pass1: value })}
-                value={password.pass1}
-                // editable={status === 1 ? false : true}
-                secureTextEntry={true}
-                placeholder="Password"
-                keyboardType="default"
-                className="w-full"
-              />
-            </View>
+          <View className="px-4 w-full">
+            <Input
+              placeholder="Username"
+              className="text-sm"
+              onChangeText={(value) => setUsername(value)}
+              leftIcon={
+                <Icon
+                  name="user"
+                  type="antdesign"
+                  color={usernameState === 1 ? "#dc2626" : "black"}
+                  style={tw(" text-gray-400 mr-2")}
+                  size={20}
+                />
+              }
+            />
+          </View>
+          <View className="px-4 w-full">
+            <Input
+              secureTextEntry={true}
+              placeholder="Password"
+              className="text-sm"
+              onChangeText={(value) => setPass({ ...password, pass1: value })}
+              leftIcon={
+                <Icon
+                  name="lock"
+                  type="antdesign"
+                  color={usernameState === 1 ? "#dc2626" : "black"}
+                  style={tw(" text-gray-400 mr-2")}
+                  size={20}
+                />
+              }
+            />
           </View>
 
           <TouchableOpacity

@@ -9,21 +9,10 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./local/assets/icon.png",
-          "color": "#ffffff",
-          "sounds": [
-            "./local/assets/notification-sound.wav",
-            "./local/assets/notification-sound-other.wav"
-          ]
-        }
       ]
     ],
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon_full.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -34,12 +23,13 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "thestore.greenclub.iitgn"
     },
     "android": {
       "package": "thestore.greenclub.iitgn",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/icon_full.png",
         "backgroundColor": "#FFFFFF"
       },
       "permissions": ["android.permission.RECORD_AUDIO"]

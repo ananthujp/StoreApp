@@ -44,9 +44,11 @@ const AdsProfile = () => {
     >
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("NewProduct", {
-            userid: user.id,
-          });
+          user
+            ? navigation.navigate("NewProduct", {
+                userid: user.id,
+              })
+            : navigation.navigate("Login");
         }}
         style={tw(
           "flex flex-row items-center my-3 bg-indigo-500 flex items-center px-4 py-1 rounded-md "

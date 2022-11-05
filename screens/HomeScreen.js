@@ -33,6 +33,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { NOTIFICATIONS } from "expo-permissions";
 import postFunc from "../Backend";
+import Login from "./LoginWidget";
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View style={[{ backgroundColor }]}>
     <SafeAreaView style={{ marginTop: Platform.OS === "ios" ? -44 : 0 }}>
@@ -122,7 +123,7 @@ const HomeScreen = () => {
         content: "light-content",
       });
   }, [isFocused]);
-
+  const [loginscreen, setLogin] = useState(false);
   // useEffect(() => {
   //   setStatusBar({
   //     color: "#4338ca",
@@ -137,8 +138,17 @@ const HomeScreen = () => {
 
       <Update currentVersion={currentVersion} />
       <View className="flex flex-col h-full w-full bg-indigo-700">
-        <Profile />
-
+        <Profile setLogin={setLogin} />
+        {/* <Modal
+          animationType="slide"
+          transparent={true}
+          visible={loginscreen}
+          onRequestClose={() => {
+            setLogin(false);
+          }}
+        >
+          <Login setLogin={setLogin} />
+        </Modal> */}
         <BottomSheet
           index={1}
           handleComponent={() => (

@@ -1,6 +1,13 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Linking,
+} from "react-native";
 import React, { useEffect } from "react";
-import { Icon } from "react-native-elements";
+import { Icon, SocialIcon } from "react-native-elements";
 import useAuth from "../hooks/userAuth";
 import { useNavigation } from "@react-navigation/core";
 
@@ -102,7 +109,7 @@ const About = () => {
       </View>
 
       <View className="flex flex-col w-full">
-        <Text className="mr-auto text-sm text-gray-600 mt-8 ml-8">
+        <Text className="mr-auto font-bold text-sm text-gray-600 mt-8 ml-8">
           Technical Details
         </Text>
         <FlatList
@@ -113,9 +120,9 @@ const About = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
-        <View className="flex flex-row items-center mx-8 mt-4">
-          <Text className="mx-2 font-bold">Developer :</Text>
-          <Text className="mx-2 ">Ananthu J P</Text>
+        <View className="flex flex-row items-center mx-8 mt-2">
+          <Text className="mx-2 text-gray-500 font-semibold">Developer :</Text>
+          <Text className="mx-2 text-gray-500 ">Ananthu J P</Text>
           <Icon
             name="github"
             type="antdesign"
@@ -124,9 +131,12 @@ const About = () => {
             size={12}
           />
         </View>
+
         <View className="flex flex-row items-center mx-8 ">
-          <Text className="mx-2 font-bold">Source Code :</Text>
-          <Text className="mx-2 ">Store | GitHub</Text>
+          <Text className="mx-2 text-gray-500 font-semibold">
+            Source Code :
+          </Text>
+          <Text className="mx-2 text-gray-500 ">Store | GitHub</Text>
           <Icon
             name="github"
             type="antdesign"
@@ -134,6 +144,88 @@ const About = () => {
             className=" text-white mr-2"
             size={12}
           />
+        </View>
+      </View>
+      <View className="flex flex-col w-full">
+        <Text className="mr-auto font-bold text-sm text-gray-600 mt-8 ml-8">
+          Green Club
+        </Text>
+        <View className="flex flex-col w-full">
+          <TouchableOpacity
+            onPress={() =>
+              Linking.canOpenURL("https://students.iitgn.ac.in/greenclub").then(
+                (dc) =>
+                  dc &&
+                  Linking.openURL("https://students.iitgn.ac.in/greenclub")
+              )
+            }
+            className="flex flex-row items-center mx-8 mt-2"
+          >
+            <Text className="mx-2 text-gray-500 font-semibold">Website :</Text>
+            <Text className="mx-2 text-gray-500 ">Green Club</Text>
+            <Icon
+              name="link"
+              type="antdesign"
+              color="#4338ca"
+              className=" text-white mr-2"
+              size={12}
+            />
+          </TouchableOpacity>
+          <View className="flex flex-col mx-8 mt-2">
+            <View className="flex flex-row items-center">
+              <Text className="mx-2 text-gray-500 font-semibold">
+                Social Media
+              </Text>
+            </View>
+            <View className="flex flex-row w-auto items-center mt-1">
+              <SocialIcon
+                onPress={() =>
+                  Linking.canOpenURL(
+                    "https://www.instagram.com/iitgngreenclub/"
+                  ).then(
+                    (dc) =>
+                      dc &&
+                      Linking.openURL(
+                        "https://www.instagram.com/iitgngreenclub/"
+                      )
+                  )
+                }
+                className="w-12"
+                button
+                light
+                type="instagram"
+              />
+              <SocialIcon
+                onPress={() =>
+                  Linking.canOpenURL("https://twitter.com/iitgn_green").then(
+                    (dc) =>
+                      dc && Linking.openURL("https://twitter.com/iitgn_green")
+                  )
+                }
+                className="w-12"
+                button
+                light
+                type="twitter"
+              />
+              <SocialIcon
+                onPress={() =>
+                  Linking.canOpenURL(
+                    "https://m.facebook.com/profile.php?id=100076824223442&ref=page_internal&_rdr"
+                  ).then(
+                    (dc) =>
+                      dc &&
+                      Linking.openURL(
+                        "https://m.facebook.com/profile.php?id=100076824223442&ref=page_internal&_rdr"
+                      )
+                  )
+                }
+                className="w-12"
+                button
+                light
+                type="facebook"
+              />
+            </View>
+          </View>
         </View>
       </View>
     </View>

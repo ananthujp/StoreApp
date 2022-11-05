@@ -8,6 +8,7 @@ import {
   Dimensions,
   Button,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import tw from "tailwind-rn";
@@ -37,7 +38,7 @@ const StoreScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [products, setProducts] = useState();
   const [prodData, setProdData] = useState();
-  const { setStatusBar } = useAuth();
+  const { setStatusBar, setPrompt, prompt } = useAuth();
   useEffect(() => {
     onSnapshot(doc(db, "Stores", data.ids), (dc) =>
       setProdData({ id: dc.id, data: dc.data() })
@@ -147,25 +148,7 @@ const StoreScreen = ({ route }) => {
           <Text style={[tw("text-4xl"), styles.fontStyle]}>
             {data.subtitle}
           </Text>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={tw("flex flex-row  items-center")}
-          >
-            <View
-              style={tw(
-                "flex flex-row items-center bg-blue-300 px-1 w-12 rounded-full"
-              )}
-            >
-              <Text style={[tw("mr-1 text-white"), styles.fontStyle]}>
-                {prodData?.data.rating ? prodData.data.rating.toFixed(1) : 0}
-              </Text>
-              <Icon name="star" type="antdesign" color="yellow" size={14} />
-            </View>
-            <Text style={[tw("mr-1 text-xs ml-2"), styles.fontStylelite]}>
-              (Total ratings{" "}
-              {prodData?.data.ratings ? prodData.data.ratings : 0})
-            </Text>
-          </TouchableOpacity>
+
           {/* <View style={[tw("mt-2 w-24")]}>
             <Button
               onPress={() => setModalVisible(true)}
@@ -186,6 +169,79 @@ const StoreScreen = ({ route }) => {
           />
         </SharedElement>
       </View>
+      <ScrollView
+        horizontal={true}
+        className="flex flex-row  w-[90%] mx-auto px-4 border-y border-gray-300"
+      >
+        <TouchableOpacity
+          onPress={() =>
+            user ? setModalVisible(true) : navigation.navigate("Login")
+          }
+          style={tw(
+            "flex flex-col my-2 items-center border-gray-300 pr-6 border-r  w-auto"
+          )}
+        >
+          <View
+            style={tw(
+              "flex flex-row items-center justify-center bg-gray-600 px-1 w-16 py-2 rounded-lg"
+            )}
+          >
+            <Text style={[tw("mr-1 text-white text-lg"), styles.fontStyle]}>
+              {prodData?.data.rating ? prodData.data.rating.toFixed(1) : 0}
+            </Text>
+            <Icon name="star" type="antdesign" color="yellow" size={14} />
+          </View>
+          <Text style={[tw("text-xs mt-1"), styles.fontStylelite]}>
+            (Total ratings {prodData?.data.ratings ? prodData.data.ratings : 0})
+          </Text>
+        </TouchableOpacity>
+
+        {prodData?.data.website && (
+          <TouchableOpacity
+            onPress={() =>
+              Linking.canOpenURL(prodData?.data.website).then(
+                (dc) => dc && Linking.openURL(prodData?.data.website)
+              )
+            }
+            className="flex flex-col px-6 my-2 border-gray-300 border-r w-auto"
+          >
+            <Icon name="language" type="material" color="gray" size={44} />
+            <Text style={[tw("text-xs mt-1"), styles.fontStylelite]}>
+              Website
+            </Text>
+          </TouchableOpacity>
+        )}
+        {prodData?.data.contact && (
+          <TouchableOpacity
+            onPress={() => Linking.openURL("tel:" + prodData?.data.contact)}
+            className="flex flex-col px-6 my-2 border-gray-300 border-r w-auto"
+          >
+            <Icon name="call" type="material" color="gray" size={44} />
+            <Text style={[tw("text-xs mt-1"), styles.fontStylelite]}>
+              Contact
+            </Text>
+          </TouchableOpacity>
+        )}
+        {prodData?.data.moreinfo && (
+          <TouchableOpacity
+            onPress={() =>
+              setPrompt({
+                show: true,
+                icon: "info",
+                title: data.title + " : More info",
+                subtitle: prodData?.data.moreinfo,
+                function: () => setPrompt({ ...prompt, show: false }),
+              })
+            }
+            className="flex flex-col px-6 my-2 border-gray-300 border-r w-auto"
+          >
+            <Icon name="info" type="material" color="gray" size={44} />
+            <Text style={[tw("text-xs mt-1"), styles.fontStylelite]}>
+              More info
+            </Text>
+          </TouchableOpacity>
+        )}
+      </ScrollView>
       <ScrollView>
         <View
           style={[tw("px-4 py-4 w-full flex flex-row"), { flexWrap: "wrap" }]}

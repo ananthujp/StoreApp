@@ -24,7 +24,7 @@ const CommentItem = ({ prof, comment, likes }) => {
       <View className="flex flex-col ml-4">
         <Text style={[tw("text-base"), styles.fontStyle]}>{profile?.name}</Text>
         <View className="flex flex-row">
-          <Text style={[tw("bg-blue-100 p-3 rounded-b-lg rounded-tr-lg mt-1")]}>
+          <Text className="bg-blue-100 p-3 rounded-b-lg rounded-tr-lg mt-1">
             {comment}
           </Text>
           <View

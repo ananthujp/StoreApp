@@ -1,4 +1,11 @@
-import { Text, View, TouchableOpacity, Animated, Alert } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Animated,
+  Alert,
+  Vibration,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Avatar, Icon, Image } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
@@ -77,8 +84,9 @@ const Stories = () => {
       <Text style={tw("text-center mt-1")}>{item.txt}</Text>
       {user && item.user === user.store && (
         <TouchableOpacity
-          className="absolute top-16 left-14 bg-white rounded-full border border-indigo-400 active:bg-indigo-600 active:text-whtie"
-          onPress={() =>
+          className="absolute top-14 left-12 bg-red-600 rounded-full border border-white active:bg-indigo-600 active:text-whtie p-1"
+          onPress={() => {
+            Vibration.vibrate(0.03 * 1000);
             Alert.alert("Delete Story", "Do you want to delete this story?", [
               {
                 text: "Cancel",
@@ -86,15 +94,10 @@ const Stories = () => {
                 style: "cancel",
               },
               { text: "OK", onPress: () => deleteItem(item.idd) },
-            ])
-          }
+            ]);
+          }}
         >
-          <Icon
-            name="delete-outline"
-            type="material"
-            color="#4338ca"
-            size={16}
-          />
+          <Icon name="delete-outline" type="material" color="white" size={16} />
         </TouchableOpacity>
       )}
     </TouchableOpacity>

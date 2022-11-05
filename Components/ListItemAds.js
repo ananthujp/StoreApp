@@ -67,7 +67,15 @@ const ListItemAds = ({ item, logo, category, index, id }) => {
         </View>
         <View style={tw("flex flex-col items-center justify-around mx-2")}>
           <TouchableOpacity
-            onPress={() =>
+            onPress={() => {
+              //Vibration.vibrate(0.03 * 1000);
+              // setPrompt({
+              //   show: true,
+              //   icon: "notification-active",
+              //   title: "Delete Product",
+              //   subtitle: "Do you want to remove this product from Green Store?",
+              //   function: () => deleteItem(),
+              // });
               Alert.alert(
                 "Delete Product",
                 "Do you want to remove this product from Green Store?",
@@ -79,8 +87,8 @@ const ListItemAds = ({ item, logo, category, index, id }) => {
                   },
                   { text: "OK", onPress: () => deleteItem() },
                 ]
-              )
-            }
+              );
+            }}
             style={tw(
               "rounded-full w-8 h-8 opacity-75 flex items-center justify-center"
             )}
