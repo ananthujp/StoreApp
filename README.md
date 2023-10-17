@@ -6,6 +6,8 @@ Welcome to Green Store, your one-stop solution for sustainable shopping and sell
 | Home        | Profile           | Products   |
 | ------------- |:-------------:| -----:|
 | <img alt="" src="https://github.com/ananthujp/StoreApp/blob/master/store-1.webp"/> | <img alt="" src="https://github.com/ananthujp/StoreApp/blob/master/store-2.webp"/> | <img alt="" src="https://github.com/ananthujp/StoreApp/blob/master/store-3.webp"/> |
+<h3>Download</h3>
+Check out the live app <a href="https://play.google.com/store/apps/details?id=com.greenstore">here</a>.
 
 <h3>For Buyers:</h3>
 <h4>Sustainable Shopping:</h4> Browse and buy items from eco-conscious stores offering sustainable products.
